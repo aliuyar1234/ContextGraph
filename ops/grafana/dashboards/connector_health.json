@@ -1,0 +1,25 @@
+{
+  "title": "OCG Connector Health",
+  "schemaVersion": 39,
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Connector Errors",
+      "targets": [
+        {
+          "expr": "sum(rate(connector_errors_total[5m])) by (tool, reason)"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Backlog Depth",
+      "targets": [
+        {
+          "expr": "ingest_backlog_depth"
+        }
+      ]
+    }
+  ]
+}
+

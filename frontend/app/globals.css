@@ -1,0 +1,74 @@
+:root {
+  --bg: #f3f0e8;
+  --ink: #1f2b32;
+  --brand: #d67a27;
+  --accent: #0f6a8d;
+  --card: #fffaf2;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Space Grotesk", "Avenir Next", "Segoe UI", sans-serif;
+  color: var(--ink);
+  background: radial-gradient(circle at top right, #ffe5bd 0, transparent 45%),
+    radial-gradient(circle at bottom left, #bfe5f2 0, transparent 40%), var(--bg);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.shell {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.topnav {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.chip {
+  background: var(--card);
+  border: 1px solid #d9ceb8;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  transition: transform 150ms ease;
+}
+
+.chip:hover {
+  transform: translateY(-2px);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid #dacfb8;
+  border-radius: 14px;
+  padding: 1rem;
+}
+
+.headline {
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  margin: 0 0 1rem;
+}
+
+@media (max-width: 640px) {
+  .shell {
+    padding: 1rem;
+  }
+}
+

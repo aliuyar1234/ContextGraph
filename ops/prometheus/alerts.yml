@@ -1,0 +1,25 @@
+groups:
+  - name: ocg-alerts
+    rules:
+      - alert: OCGHighUnknownPermissions
+        expr: increase(permission_unknown_records_total[10m]) > 50
+        for: 5m
+        labels:
+          severity: high
+        annotations:
+          summary: "Unknown permissions rising"
+      - alert: OCGHigh5xx
+        expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: high
+        annotations:
+          summary: "API 5xx rate elevated"
+      - alert: OCGConnectorErrors
+        expr: increase(connector_errors_total[10m]) > 10
+        for: 5m
+        labels:
+          severity: medium
+        annotations:
+          summary: "Connector errors increasing"
+
