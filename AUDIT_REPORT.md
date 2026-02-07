@@ -100,3 +100,16 @@
     - Python test suite passes with installed backend dependencies
     - evidence: scripts/check.sh :: check passed
     - evidence: PROGRESS.md :: Task status table
+
+## IMPLEMENTATION_AUDIT (2026-02-07 README_REFRESH)
+- result: PASS
+- top findings:
+  - Root README now reflects implemented system behavior and operator workflow, not bootstrap-only pack guidance.
+    - evidence: README.md :: Quick start (Docker Compose)
+    - evidence: README.md :: Local development
+  - Required SSOT evidence-anchor headings remain present and resolvable.
+    - evidence: README.md :: Where to find X (index)
+    - evidence: README.md :: Drift detection
+  - Change-control artifacts were updated and manifest integrity root was regenerated.
+    - evidence: CHANGELOG.md :: v2.1 (documentation professionalism refresh)
+    - evidence: checks/CHECKS_INDEX.md :: CHK-MANIFEST-VERIFY

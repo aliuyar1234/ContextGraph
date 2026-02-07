@@ -57,3 +57,14 @@ This changelog tracks changes to the SSOT pack itself (docs, structure, gates, c
   - manifest regenerated after all changes
   - evidence: DECISIONS.md :: D-0013 Dev-header auth override exists only behind explicit flag
   - evidence: checks/CHECKS_INDEX.md :: CHK-MANIFEST-VERIFY
+
+## v2.1 (documentation professionalism refresh)
+- Replaced root `README.md` with an implementation-grade operator guide:
+  - clarified product positioning, architecture map, quick start, local development, quality workflow, API surfaces, and security defaults
+  - preserved SSOT reference anchors required by checks (`Where to find X (index)`, `Drift detection`)
+  - evidence: README.md :: Where to find X (index)
+  - evidence: README.md :: Drift detection
+- Updated audit/progress records for the documentation session and regenerated `MANIFEST.sha256`.
+  - evidence: AUDIT_REPORT.md :: IMPLEMENTATION_AUDIT (2026-02-07 README_REFRESH)
+  - evidence: PROGRESS.md :: Session history
+  - evidence: checks/CHECKS_INDEX.md :: CHK-MANIFEST-VERIFY

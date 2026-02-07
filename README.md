@@ -1,17 +1,138 @@
-# OCG SSOT Pack (for Codex / AI coding agents)
+# Open Context Graph (OCG)
 
-This ZIP is a **Single Source of Truth (SSOT)** for implementing **OCG (Open Context Graph)** end-to-end with deterministic decisions, fail-closed defaults, and drift resistance. It contains **specifications only** (no implementation code).
+Open Context Graph is a self-hosted, privacy-aware process intelligence platform built from Slack, Jira, and GitHub metadata.  
+It combines fail-closed permission enforcement, private personal timelines, and k-anonymous analytics to deliver actionable workflow insight without creating a surveillance system.
 
-## How to start (operator / implementer)
-1) Read the precedence rules (below) and obey them.
-2) Execute tasks in:
-   - evidence: spec/10_PHASES_AND_TASKS.md :: PHASE_0_BOOTSTRAP
-3) Use gates as “definition of done”:
-   - evidence: spec/11_QUALITY_GATES.md :: Gate format
-4) Use the runbook to validate the minimal happy path:
-   - evidence: spec/12_RUNBOOK.md :: Day-0: minimal dev run (Docker Compose)
+## Implementation status (2026-02-07)
+- `v2.0` implementation completed across backend, frontend, operations assets, and quality gates.
+- PHASE tasks `T-0001` through `T-0024` are marked `DONE` with evidence pointers.
+- CI is anchored on the same command used locally: `make check CHECK_PROFILE=ci`.
 
-## Precedence order (MUST be applied verbatim)
+## Core capabilities
+- Connector ingestion for Slack, Jira, and GitHub (metadata-first, read-only scopes).
+- Identity resolution and knowledge graph entity inference.
+- Private user timeline and task clustering.
+- Opt-in abstraction and k-anonymous aggregate publication.
+- Process explorer analytics with patterns, variants, bottlenecks, and next-step suggestions.
+- Admin controls for connector lifecycle and retention configuration.
+- OTel-style tracing and Prometheus metrics with Grafana dashboards.
+
+## Architecture at a glance
+- `backend/`: FastAPI service, domain logic, CLI, migrations, and worker jobs.
+- `frontend/`: Next.js dashboards for admin, analytics, and personal views.
+- `ops/`: Prometheus and Grafana configuration for monitoring and alerting.
+- `docs/openapi/openapi.v1.json`: API compatibility baseline for gate enforcement.
+- `spec/`: normative SSOT specifications and quality gates.
+
+## Quick start (Docker Compose)
+Prerequisites:
+- Docker + Docker Compose
+- Make
+
+Run:
+```bash
+docker compose up -d postgres redis api workers ui
+docker compose exec api ocg migrate up
+docker compose exec api ocg seed demo
+curl -f http://127.0.0.1:8080/healthz
+curl -f http://127.0.0.1:8080/readyz
+```
+
+Open:
+- UI: `http://127.0.0.1:3000`
+- API docs: `http://127.0.0.1:8080/docs`
+
+## Local development
+Backend:
+```bash
+python -m pip install -e "backend[dev]"
+PYTHONPATH=backend python -m ocg.cli migrate up
+PYTHONPATH=backend uvicorn ocg.main:app --host 127.0.0.1 --port 8080 --reload
+```
+
+Frontend:
+```bash
+npm --prefix frontend install
+npm --prefix frontend run dev
+```
+
+## Quality workflow
+- Fast profile: `make check CHECK_PROFILE=fast`
+- CI-equivalent: `make check CHECK_PROFILE=ci`
+- Full suite: `make check CHECK_PROFILE=full`
+
+The quality command runs format, lint, typecheck, unit tests, profile-gated integration tests, migration checks, secret scans, redaction scans, and (for `ci`/`full`) OpenAPI compatibility.
+
+## API surfaces
+- Health and metrics:
+  - `GET /healthz`
+  - `GET /readyz`
+  - `GET /metrics`
+- Admin:
+  - `/api/v1/admin/connectors/*`
+- Personal:
+  - `/api/v1/personal/timeline`
+  - `/api/v1/personal/tasks`
+  - `/api/v1/personal/opt_in_aggregation`
+- Analytics:
+  - `/api/v1/analytics/processes/*`
+  - `/api/v1/analytics/patterns/*`
+- Suggestions:
+  - `POST /api/v1/suggest/next_steps`
+
+## Security and privacy defaults
+- Fail-closed permissions: unknown ACL state is excluded from user-visible output.
+- OIDC is mandatory for non-local bind startup.
+- Raw-content ingestion is disabled by default.
+- Aggregated analytics require k-anonymity thresholds.
+- Dev header auth override exists only behind explicit flag (`OCG_DEV_AUTH_ENABLED=true`).
+
+## Where to find X (index)
+- Goals / constraints / invariants:
+  - evidence: spec/00_PROJECT_FINGERPRINT.md :: Canonical summary (1 screen)
+- Scope and MVP boundaries:
+  - evidence: spec/01_SCOPE.md :: MVP definition (ship threshold)
+- Architecture boundaries and critical/hot paths:
+  - evidence: spec/02_ARCHITECTURE.md :: Component boundary table (normative)
+  - evidence: spec/02_ARCHITECTURE.md :: HOT_PATHS (HP) (normative)
+- Domain model and privacy invariants:
+  - evidence: spec/03_DOMAIN_MODEL.md :: Permission and privacy invariants (normative)
+- REST contracts and compatibility:
+  - evidence: spec/04_INTERFACES_AND_CONTRACTS.md :: REST API (normative)
+- Datastore schema and migration rules:
+  - evidence: spec/05_DATASTORE_AND_MIGRATIONS.md :: Schema overview (normative)
+- Security posture, trust boundaries, abuse cases:
+  - evidence: spec/06_SECURITY_AND_THREAT_MODEL.md :: Trust boundaries (normative)
+  - evidence: spec/06_SECURITY_AND_THREAT_MODEL.md :: TOP_ABUSE_CASES (AC) (>=10; normative)
+- Reliability semantics:
+  - evidence: spec/07_RELIABILITY_AND_OPERATIONS.md :: Reliability principles (normative)
+- Metrics/traces/dashboards:
+  - evidence: spec/08_OBSERVABILITY.md :: Signals that prove correctness (contracts C1-C5)
+- Deterministic test strategy:
+  - evidence: spec/09_TEST_STRATEGY.md :: Determinism expectations (normative)
+- Task plan and delivery checkpoints:
+  - evidence: spec/10_PHASES_AND_TASKS.md :: PHASE_0_BOOTSTRAP (repo + CI + docs-as-code)
+- Quality gates:
+  - evidence: spec/11_QUALITY_GATES.md :: Gate format
+- Day-0 operations and incidents:
+  - evidence: spec/12_RUNBOOK.md :: Top 5 incident playbooks
+- Decision and assumption logs:
+  - evidence: DECISIONS.md :: Decisions (append-only)
+  - evidence: ASSUMPTIONS.md :: Assumptions (append-only)
+- Progress and evidence of completion:
+  - evidence: PROGRESS.md :: Task status table
+
+## Drift detection
+- `MANIFEST.sha256` is the integrity root for this repository.
+- Any content change requires:
+  1) updating `CHANGELOG.md` and `AUDIT_REPORT.md`,
+  2) regenerating `MANIFEST.sha256`,
+  3) and verifying integrity.
+- Verification reference:
+  - evidence: checks/CHECKS_INDEX.md :: CHK-MANIFEST-VERIFY
+
+## Governance
+Precedence order (MUST be applied verbatim):
 1) AGENTS.md
 2) CONSTITUTION.md
 3) spec/* (numeric order; existing files only)
@@ -19,70 +140,3 @@ This ZIP is a **Single Source of Truth (SSOT)** for implementing **OCG (Open Con
 5) ASSUMPTIONS.md
 6) README.md
 7) templates/*, checks/*, runbook content
-
-## Where to find X (index)
-- Goals / constraints / must-not-happen: evidence: spec/00_PROJECT_FINGERPRINT.md :: Canonical summary (1 screen)
-- Scope boundaries and MVP: evidence: spec/01_SCOPE.md :: MVP definition (ship threshold)
-- Architecture components + hot paths: evidence: spec/02_ARCHITECTURE.md :: Component boundary table (normative)
-- Domain objects (traces, patterns, graphs): evidence: spec/03_DOMAIN_MODEL.md :: Key domain objects (fields are conceptual; storage in spec/05)
-- Public API contracts + examples: evidence: spec/04_INTERFACES_AND_CONTRACTS.md :: REST API (normative)
-- DB schema + migrations + retention: evidence: spec/05_DATASTORE_AND_MIGRATIONS.md :: Schema overview (normative)
-- Security posture + trust boundaries + abuse cases: evidence: spec/06_SECURITY_AND_THREAT_MODEL.md :: TOP_ABUSE_CASES (AC) (>=10; normative)
-- Reliability semantics (timeouts/retries/bulkheads): evidence: spec/07_RELIABILITY_AND_OPERATIONS.md :: Reliability principles (normative)
-- Observability signals and dashboards: evidence: spec/08_OBSERVABILITY.md :: Dashboards (outline; normative)
-- Test expectations and determinism rules: evidence: spec/09_TEST_STRATEGY.md :: Determinism expectations (normative)
-- Implementation plan (single path): evidence: spec/10_PHASES_AND_TASKS.md :: Single ordered path: PHASE_0_BOOTSTRAP → DONE.
-- Quality gates (binary): evidence: spec/11_QUALITY_GATES.md :: Gate format
-- Day-0 run + incident playbooks: evidence: spec/12_RUNBOOK.md :: Top 5 incident playbooks
-- Decision log: evidence: DECISIONS.md :: Decisions (append-only)
-- Assumptions log: evidence: ASSUMPTIONS.md :: Assumptions (append-only)
-- Open questions: evidence: QUESTIONS_FOR_USER.md :: Questions for user (non-blocking unless explicitly marked)
-- Drift / manifest rules: evidence: checks/CHECKS_INDEX.md :: CHK-MANIFEST-VERIFY
-
-## System tour (15 minutes)
-- Product surfaces:
-  - Web UI dashboards and admin: evidence: spec/00_PROJECT_FINGERPRINT.md :: Product shape
-  - REST API (`/api/v1/*`): evidence: spec/04_INTERFACES_AND_CONTRACTS.md :: Public surfaces
-  - CLI `ocg` (migrations/seed/diagnostics): evidence: spec/02_ARCHITECTURE.md :: Component boundary table (normative)
-- Critical flows (risk-bearing):
-  - CF-1 connector onboarding + permission sync: evidence: spec/02_ARCHITECTURE.md :: CF-1 (CRITICAL)
-  - CF-2 permission-enforced dashboards: evidence: spec/02_ARCHITECTURE.md :: CF-2 (CRITICAL)
-  - CF-3 personal timeline privacy boundary: evidence: spec/02_ARCHITECTURE.md :: CF-3 (CRITICAL)
-  - CF-4 k-anonymous aggregation publish: evidence: spec/02_ARCHITECTURE.md :: CF-4 (CRITICAL)
-  - CF-5 retention/deletion/export: evidence: spec/02_ARCHITECTURE.md :: CF-5 (CRITICAL)
-  - CF-6 next-step suggestions: evidence: spec/02_ARCHITECTURE.md :: CF-6 (CRITICAL)
-- Where performance matters:
-  - Analytics query: evidence: spec/02_ARCHITECTURE.md :: HP-0001: Analytics dashboard “process explorer” query
-  - Suggestions endpoint: evidence: spec/02_ARCHITECTURE.md :: HP-0002: Suggestion endpoint “next steps”
-- How to validate the minimal path:
-  - Run stack + seed demo + verify UI endpoints: evidence: spec/12_RUNBOOK.md :: Day-0: minimal dev run (Docker Compose)
-- How to validate quality:
-  - Gates define pass/fail: evidence: spec/11_QUALITY_GATES.md :: Gate format
-  - Checks index defines how to run and interpret: evidence: checks/CHECKS_INDEX.md :: Checks overview
-
-## Change map (top 10): If you change X, update Y (and re-run checks)
-1) API routes / request/response shapes → update: evidence: spec/04_INTERFACES_AND_CONTRACTS.md :: REST API (normative)
-2) AuthN/AuthZ model → update: evidence: spec/06_SECURITY_AND_THREAT_MODEL.md :: AuthN/AuthZ (normative)
-3) Permission filtering logic → update: evidence: spec/03_DOMAIN_MODEL.md :: Permission and privacy invariants (normative)
-4) DB schema / indexes → update: evidence: spec/05_DATASTORE_AND_MIGRATIONS.md :: Schema overview (normative)
-5) Migrations discipline → update: evidence: spec/05_DATASTORE_AND_MIGRATIONS.md :: Expand/contract migrations (normative)
-6) Retry/timeout behavior → update: evidence: spec/07_RELIABILITY_AND_OPERATIONS.md :: Retry rules (normative)
-7) Aggregation/k-anonymity rules → update: evidence: spec/03_DOMAIN_MODEL.md :: K-anonymity rules (normative)
-8) Hot paths or perf budgets → update: evidence: spec/02_ARCHITECTURE.md :: HOT_PATHS (HP) (normative)
-9) Logs/metrics/traces schema → update: evidence: spec/08_OBSERVABILITY.md :: Correlation (normative)
-10) Any critical flow semantics → update: evidence: spec/02_ARCHITECTURE.md :: Main flows (3–7), critical flows marked
-
-## Drift detection and MANIFEST
-- MANIFEST.sha256 is the integrity root for this pack.
-- Any change to any file requires:
-  1) updating CHANGELOG.md and AUDIT_REPORT.md,
-  2) regenerating MANIFEST.sha256,
-  3) and re-running reference integrity checks.
-- Verification check:
-  - evidence: checks/CHECKS_INDEX.md :: CHK-MANIFEST-VERIFY
-
-## Implementation snapshot (2026-02-07)
-- Backend/API + workers + CLI implemented under `backend/`.
-- Frontend dashboards implemented under `frontend/`.
-- Ops assets (compose/prometheus/grafana) implemented under `docker-compose.yml` and `ops/`.
-- Quality anchor command: `make check CHECK_PROFILE=fast|ci|full`.
