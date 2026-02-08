@@ -190,3 +190,19 @@
     - repository fast-check path runs through format/lint/typecheck/unit/secret/redaction and fails at migration stage in Git-Bash due Windows path conversion (`/e/...` -> invalid SQLite path).
       - evidence: scripts/check.sh :: check profile: $PROFILE
       - evidence: scripts/migration_check.sh :: export OCG_DATABASE_URL="sqlite+pysqlite:///$(pwd)/$TMP_DB"
+
+## IMPLEMENTATION_AUDIT (2026-02-08 README_SKIM_RELEASE_PREP)
+- result: PASS
+- top findings:
+  - README was reorganized into a skim-first sequence for faster first impression:
+    project summary -> screenshots -> architecture -> technical details.
+    - evidence: README.md :: What This Project Is
+    - evidence: README.md :: Demo story screenshots (desktop)
+    - evidence: README.md :: Architecture overview (Mermaid)
+    - evidence: README.md :: Technical Guide
+  - Badge set now includes release visibility and self-hosted positioning.
+    - evidence: README.md :: [![Release]
+    - evidence: README.md :: [![Self-Hosted]
+  - Story screenshots were refreshed and preserved in canonical docs path.
+    - evidence: MANIFEST.sha256 :: docs/screenshots/story-01-overview.png
+    - evidence: MANIFEST.sha256 :: docs/screenshots/story-04-analytics-sales.png

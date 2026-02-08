@@ -1,61 +1,28 @@
 # Open Context Graph (OCG)
 
 [![CI](https://github.com/aliuyar1234/ContextGraph/actions/workflows/ci.yml/badge.svg)](https://github.com/aliuyar1234/ContextGraph/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/tag/aliuyar1234/ContextGraph?sort=semver)](https://github.com/aliuyar1234/ContextGraph/tags)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Next.js](https://img.shields.io/badge/Next.js-15.5.12-black)](frontend/package.json)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB)](backend/pyproject.toml)
+[![Self-Hosted](https://img.shields.io/badge/Deployment-Self--Hosted-4c8bf5)](README.md#quick-start-docker-compose)
 
 Open Context Graph is a self-hosted, privacy-aware process intelligence platform built from Slack, Jira, and GitHub metadata.
 It combines fail-closed permission enforcement, private personal timelines, and k-anonymous analytics so teams can improve execution without creating surveillance risk.
 
-## Table of contents
-- [Implementation status (2026-02-08)](#implementation-status-2026-02-08)
-- [Why OCG](#why-ocg)
-- [Core capabilities](#core-capabilities)
-- [Architecture at a glance](#architecture-at-a-glance)
-- [Architecture overview (Mermaid)](#architecture-overview-mermaid)
-- [Demo story screenshots (desktop)](#demo-story-screenshots-desktop)
-- [Quick start (Docker Compose)](#quick-start-docker-compose)
-- [Local development](#local-development)
-- [Configuration essentials](#configuration-essentials)
-- [Quality workflow](#quality-workflow)
-- [Worker operations](#worker-operations)
-- [API surfaces](#api-surfaces)
-- [Security and privacy defaults](#security-and-privacy-defaults)
-- [Observability](#observability)
-- [Contributing](#contributing)
-- [Where to find X (index)](#where-to-find-x-index)
-- [Drift detection](#drift-detection)
-- [Governance](#governance)
+## What This Project Is
+- A self-hosted process intelligence platform for engineering and operations teams.
+- Built from enterprise metadata streams (Slack, Jira, GitHub), not employee surveillance.
+- Privacy-first by design: fail-closed permissions, private personal views, k-anonymous aggregation.
 
-## Implementation status (2026-02-08)
-- Hardening pass (`v2.2`) is complete across worker runtime wiring, CI strictness, index coverage, tracing, and quality gates.
-- Frontend security patch (`v2.3`) is applied with Next.js `15.5.12`.
-- Backend formatting debt closure (`v2.4`) is complete and strict `CHECK_PROFILE=ci` is green.
-- PHASE tasks `T-0001` through `T-0024` are marked `DONE` with evidence pointers in `PROGRESS.md`.
+## Demo story screenshots (desktop)
+Overview:
 
-## Why OCG
-- Keep personal visibility private while still enabling organization-level process insight.
-- Enforce access fail-closed across ingestion, graph processing, and API serving.
-- Maintain deterministic, auditable delivery through a single quality anchor command in local and CI environments.
+![Story Overview](docs/screenshots/story-01-overview.png)
 
-## Core capabilities
-- Connector ingestion for Slack, Jira, and GitHub (metadata-first, read-only scopes).
-- Identity resolution and knowledge graph entity inference.
-- Private user timeline and task clustering.
-- Opt-in abstraction and k-anonymous aggregate publication.
-- Process explorer analytics with variants, bottlenecks, and next-step suggestions.
-- Admin controls for connector lifecycle and retention settings.
-- Trace correlation, Prometheus metrics, and Grafana dashboards.
+Sales-to-Delivery handoff:
 
-## Architecture at a glance
-| Layer | What it contains |
-|---|---|
-| `backend/` | FastAPI service, domain services, migrations, CLI, worker runtime |
-| `frontend/` | Next.js dashboards (`/admin`, `/analytics`, `/personal`) |
-| `ops/` | Prometheus scrape config, alert rules, Grafana dashboards |
-| `docs/openapi/` | OpenAPI compatibility baseline artifact |
-| `spec/` | Normative SSOT contracts, gates, runbook, and acceptance plan |
+![Story Sales to Delivery](docs/screenshots/story-04-analytics-sales.png)
 
 ## Architecture overview (Mermaid)
 ```mermaid
@@ -96,14 +63,16 @@ flowchart LR
   Workers --> Prom
 ```
 
-## Demo story screenshots (desktop)
-Overview:
+| Layer | What it contains |
+|---|---|
+| `backend/` | FastAPI service, domain services, migrations, CLI, worker runtime |
+| `frontend/` | Next.js dashboards (`/admin`, `/analytics`, `/personal`) |
+| `ops/` | Prometheus scrape config, alert rules, Grafana dashboards |
+| `docs/openapi/` | OpenAPI compatibility baseline artifact |
+| `spec/` | Normative SSOT contracts, gates, runbook, and acceptance plan |
 
-![Story Overview](docs/screenshots/story-01-overview.png)
-
-Sales-to-Delivery handoff:
-
-![Story Sales to Delivery](docs/screenshots/story-04-analytics-sales.png)
+## Technical Guide
+Legacy note: Table of contents intentionally removed for skim-first README flow.
 
 ## Quick start (Docker Compose)
 Prerequisites:

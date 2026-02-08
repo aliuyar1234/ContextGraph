@@ -136,3 +136,18 @@ This changelog tracks changes to the SSOT pack itself (docs, structure, gates, c
   - evidence: README.md :: Demo story screenshots (desktop)
   - evidence: MANIFEST.sha256 :: docs/screenshots/story-01-overview.png
   - evidence: MANIFEST.sha256 :: docs/screenshots/story-04-analytics-sales.png
+
+## v2.7 (readme skim-first release prep)
+- Restructured `README.md` for a 5-second skim flow:
+  - removed the table of contents block
+  - moved project summary to the top, followed by screenshots, then architecture, then technical sections
+  - evidence: README.md :: What This Project Is
+  - evidence: README.md :: Demo story screenshots (desktop)
+  - evidence: README.md :: Architecture overview (Mermaid)
+  - evidence: README.md :: Technical Guide
+- Added release/distribution emphasis badges at the top of the README.
+  - evidence: README.md :: [![Release]
+  - evidence: README.md :: [![Self-Hosted]
+- Refreshed story screenshot assets (including user-updated story overview) for cleaner presentation quality.
+  - evidence: MANIFEST.sha256 :: docs/screenshots/story-01-overview.png
+  - evidence: MANIFEST.sha256 :: docs/screenshots/story-04-analytics-sales.png
