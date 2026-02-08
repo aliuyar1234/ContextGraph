@@ -107,3 +107,9 @@
 - Rationale: Remove formatting debt that blocked strict CI and ensure deterministic style checks.
 - Verification impact: G-0006.
 - Evidence: spec/10_PHASES_AND_TASKS.md :: T-0002 Define ONE repo-anchoring quality command
+
+## D-0019 OpenAPI compatibility check compares canonical JSON structure
+- Decision: `scripts/openapi_check.sh` compares generated OpenAPI and baseline as parsed JSON structures instead of raw byte-level `cmp`.
+- Rationale: Prevent cross-platform newline differences (CRLF/LF) from causing false CI failures while still enforcing contract-level compatibility.
+- Verification impact: G-0012.
+- Evidence: spec/11_QUALITY_GATES.md :: G-0012 API compatibility gate (C5)

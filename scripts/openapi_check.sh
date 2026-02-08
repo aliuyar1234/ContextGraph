@@ -34,7 +34,16 @@ if [ ! -f "docs/openapi/openapi.v1.json" ]; then
   exit 0
 fi
 
-if cmp -s "$TMP" "docs/openapi/openapi.v1.json"; then
+if "$PYTHON_BIN" - <<'PY'
+import json
+import sys
+from pathlib import Path
+
+generated = json.loads(Path("docs/openapi/.generated.json").read_text(encoding="utf-8"))
+baseline = json.loads(Path("docs/openapi/openapi.v1.json").read_text(encoding="utf-8"))
+sys.exit(0 if generated == baseline else 1)
+PY
+then
   rm -f "$TMP"
   echo "openapi_check: pass"
   exit 0

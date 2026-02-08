@@ -206,3 +206,14 @@
   - Story screenshots were refreshed and preserved in canonical docs path.
     - evidence: MANIFEST.sha256 :: docs/screenshots/story-01-overview.png
     - evidence: MANIFEST.sha256 :: docs/screenshots/story-04-analytics-sales.png
+
+## IMPLEMENTATION_AUDIT (2026-02-08 CI_API_COMPAT_FIX)
+- result: PASS
+- top findings:
+  - Root cause confirmed: CI failed exclusively in API compatibility stage due strict byte comparison of OpenAPI JSON artifacts.
+    - evidence: spec/11_QUALITY_GATES.md :: G-0012 API compatibility gate (C5)
+  - Check logic now compares parsed JSON structure, eliminating CRLF/LF false positives while preserving compatibility enforcement.
+    - evidence: scripts/openapi_check.sh :: openapi_check: pass
+    - evidence: DECISIONS.md :: D-0019 OpenAPI compatibility check compares canonical JSON structure
+  - Local temp OpenAPI artifact is now ignored to prevent workspace drift noise.
+    - evidence: .gitignore :: docs/openapi/.generated.json

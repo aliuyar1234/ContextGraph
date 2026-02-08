@@ -151,3 +151,13 @@ This changelog tracks changes to the SSOT pack itself (docs, structure, gates, c
 - Refreshed story screenshot assets (including user-updated story overview) for cleaner presentation quality.
   - evidence: MANIFEST.sha256 :: docs/screenshots/story-01-overview.png
   - evidence: MANIFEST.sha256 :: docs/screenshots/story-04-analytics-sales.png
+
+## v2.7.1 (ci api-compatibility stabilization)
+- Fixed false-negative API compatibility failures in CI by normalizing OpenAPI comparison to semantic JSON equality.
+  - replaced byte-level file comparison with canonical parsed JSON comparison in `scripts/openapi_check.sh`
+  - evidence: scripts/openapi_check.sh :: openapi_check: pass
+  - evidence: spec/11_QUALITY_GATES.md :: G-0012 API compatibility gate (C5)
+- Added local hygiene ignore rule for transient OpenAPI generation artifact.
+  - evidence: .gitignore :: docs/openapi/.generated.json
+- Recorded quality-check behavior change in decision log.
+  - evidence: DECISIONS.md :: D-0019 OpenAPI compatibility check compares canonical JSON structure
