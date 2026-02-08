@@ -156,3 +156,16 @@
     - evidence: backend/tests/integration/test_end_to_end_pipeline.py :: test_ingest_to_analytics_pipeline
   - Strict repository quality command now passes end-to-end under `CHECK_PROFILE=ci`.
     - evidence: scripts/check.sh :: check passed
+
+## IMPLEMENTATION_AUDIT (2026-02-08 README_UX_REFRESH)
+- result: PASS
+- top findings:
+  - Root README is now organized for first-time GitHub visitors with clear onboarding flow and navigation.
+    - evidence: README.md :: Table of contents
+    - evidence: README.md :: Quick start (Docker Compose)
+  - Operator and contributor guidance is clearer through explicit configuration, quality, and contribution sections.
+    - evidence: README.md :: Configuration essentials
+    - evidence: README.md :: Contributing
+  - Required SSOT anchor sections remain present for evidence/gate compatibility.
+    - evidence: README.md :: Where to find X (index)
+    - evidence: README.md :: Drift detection

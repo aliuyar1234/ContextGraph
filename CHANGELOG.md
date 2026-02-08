@@ -108,3 +108,14 @@ This changelog tracks changes to the SSOT pack itself (docs, structure, gates, c
 - Re-ran strict `CHECK_PROFILE=ci` with isolated SQLite migration URL:
   - all stages now pass (format, lint, typecheck, frontend build, unit/integration, migration, secret/redaction, OpenAPI).
   - evidence: scripts/check.sh :: check passed
+
+## v2.5 (readme ux refresh)
+- Reworked root `README.md` into a GitHub-first, user-friendly guide:
+  - added status/tooling badges, table of contents, clearer quick start flow, config essentials table, and contribution guidance
+  - preserved required SSOT anchor sections (`Where to find X (index)`, `Drift detection`)
+  - evidence: README.md :: Table of contents
+  - evidence: README.md :: Quick start (Docker Compose)
+  - evidence: README.md :: Local development
+- Updated change-control records and regenerated manifest integrity root.
+  - evidence: AUDIT_REPORT.md :: IMPLEMENTATION_AUDIT (2026-02-08 README_UX_REFRESH)
+  - evidence: checks/CHECKS_INDEX.md :: CHK-MANIFEST-VERIFY
