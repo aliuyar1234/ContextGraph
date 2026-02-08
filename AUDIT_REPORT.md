@@ -142,3 +142,17 @@
     - frontend build and strict backend test/type/migration/API checks pass
     - backend formatting debt remains and currently blocks all-green strict profile
     - evidence: scripts/check.sh :: check profile: ci
+
+## IMPLEMENTATION_AUDIT (2026-02-08 FORMAT_DEBT_CLOSURE)
+- result: PASS
+- top findings:
+  - Backend Python codebase is normalized to repository Ruff formatting baseline, removing strict format gate drift.
+    - evidence: DECISIONS.md :: D-0018 Backend codebase adopts repository-wide Ruff formatting baseline
+    - evidence: backend/ocg/services/aggregation.py :: cluster_and_publish
+  - Functional quality posture remains intact after normalization:
+    - ruff lint/type checks and backend pytest pass
+    - evidence: scripts/lint.sh :: -m ruff check backend
+    - evidence: scripts/typecheck.sh :: -m mypy backend/ocg
+    - evidence: backend/tests/integration/test_end_to_end_pipeline.py :: test_ingest_to_analytics_pipeline
+  - Strict repository quality command now passes end-to-end under `CHECK_PROFILE=ci`.
+    - evidence: scripts/check.sh :: check passed
