@@ -41,7 +41,7 @@ services:
     build:
       context: .
       dockerfile: backend/Dockerfile
-    command: ["sleep", "infinity"]
+    command: ["python", "-m", "ocg.cli", "worker", "run"]
     environment:
       OCG_DATABASE_URL: postgresql+psycopg://ocg:ocg@postgres:5432/ocg
       OCG_REDIS_URL: redis://redis:6379/0
@@ -51,6 +51,25 @@ services:
       OCG_OIDC_HS256_SECRET: dev-secret
       OCG_DEV_AUTH_ENABLED: "true"
       OCG_SERVER_BIND: 0.0.0.0
+    depends_on:
+      - postgres
+      - redis
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    command: ["python", "-m", "ocg.cli", "worker", "scheduler"]
+    environment:
+      OCG_DATABASE_URL: postgresql+psycopg://ocg:ocg@postgres:5432/ocg
+      OCG_REDIS_URL: redis://redis:6379/0
+      OCG_AUTH_MODE: oidc
+      OCG_OIDC_ISSUER: https://dev-issuer.local
+      OCG_OIDC_AUDIENCE: ocg-api
+      OCG_OIDC_HS256_SECRET: dev-secret
+      OCG_DEV_AUTH_ENABLED: "true"
+      OCG_SERVER_BIND: 0.0.0.0
+      OCG_WORKER_SCHEDULER_INTERVAL_SECONDS: 120
     depends_on:
       - postgres
       - redis

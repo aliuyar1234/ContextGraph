@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from ocg.api.deps import get_db, require_analytics_role
-from ocg.services import aggregation, analytics
+from ocg.services import analytics
 
 router = APIRouter(prefix="/api/v1/analytics", tags=["analytics"])
 

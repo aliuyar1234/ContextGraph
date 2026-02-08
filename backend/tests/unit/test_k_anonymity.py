@@ -3,7 +3,6 @@ from datetime import timedelta
 from ocg.core.settings import Settings
 from ocg.db import models
 from ocg.services import aggregation
-from ocg.services.common import utcnow
 
 
 def test_k_anonymity_prevents_publish_below_threshold(db_session, now):
@@ -35,4 +34,3 @@ def test_k_anonymity_prevents_publish_below_threshold(db_session, now):
     assert result["dropped"] >= 1
     patterns = db_session.query(models.ContextPattern).all()
     assert all(pattern.published is False for pattern in patterns)
-

@@ -16,6 +16,7 @@ def create_app() -> FastAPI:
     @app.exception_handler(HTTPException)
     async def http_exception_handler(request: Request, exc: HTTPException):
         retryable = exc.status_code in {429, 503, 504}
+        trace_id = getattr(request.state, "trace_id", "trace_unknown")
         code_map = {
             400: "INVALID_ARGUMENT",
             401: "UNAUTHENTICATED",
@@ -32,18 +33,21 @@ def create_app() -> FastAPI:
                 "message": str(exc.detail),
                 "retryable": retryable,
                 "request_id": request.headers.get("X-Request-Id", "req_unknown"),
+                "trace_id": trace_id,
             }
         }
         return JSONResponse(status_code=exc.status_code, content=payload)
 
     @app.exception_handler(Exception)
     async def exception_handler(request: Request, exc: Exception):  # noqa: ANN001
+        trace_id = getattr(request.state, "trace_id", "trace_unknown")
         payload = {
             "error": {
                 "code": "INTERNAL",
                 "message": str(exc),
                 "retryable": False,
                 "request_id": request.headers.get("X-Request-Id", "req_unknown"),
+                "trace_id": trace_id,
             }
         }
         return JSONResponse(status_code=500, content=payload)

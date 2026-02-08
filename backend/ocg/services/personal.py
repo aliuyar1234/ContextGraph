@@ -1,7 +1,7 @@
 from collections import defaultdict
 from datetime import timedelta
 
-from sqlalchemy import and_, delete, select
+from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from ocg.db import models
@@ -130,4 +130,3 @@ def personal_tasks(db: Session, person_id: str) -> list[dict]:
         }
         for row in rows
     ]
-

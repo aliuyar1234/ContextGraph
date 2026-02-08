@@ -1,4 +1,3 @@
-from collections.abc import Iterable
 from datetime import UTC
 
 from sqlalchemy import and_, select
@@ -100,10 +99,15 @@ def ingest_connector_batch(db: Session, connector: Connector, config: dict) -> d
         events = connector.fetch_events(config)
         resources = connector.fetch_acls(config)
 
-    for delta in resources:
-        resource = _upsert_resource(db, delta)
-        if delta.permission_state == "KNOWN":
-            _sync_resource_acl(db, resource.resource_id, delta.acl_principal_ids, connector.tool)
+    for acl_delta in resources:
+        resource_row = _upsert_resource(db, acl_delta)
+        if acl_delta.permission_state == "KNOWN":
+            _sync_resource_acl(
+                db,
+                resource_row.resource_id,
+                acl_delta.acl_principal_ids,
+                connector.tool,
+            )
 
     raw_written = 0
     traces_written = 0
@@ -112,13 +116,17 @@ def ingest_connector_batch(db: Session, connector: Connector, config: dict) -> d
             continue
         raw_written += 1
         _store_raw_event(db, event)
-        normalized, delta = connector.normalize(event)
-        if delta:
-            resource = _upsert_resource(db, delta)
-            if delta.permission_state == "KNOWN":
-                _sync_resource_acl(db, resource.resource_id, delta.acl_principal_ids, connector.tool)
-        else:
-            resource = None
+        normalized, normalized_delta = connector.normalize(event)
+        resource_for_trace: models.Resource | None = None
+        if normalized_delta:
+            resource_for_trace = _upsert_resource(db, normalized_delta)
+            if normalized_delta.permission_state == "KNOWN":
+                _sync_resource_acl(
+                    db,
+                    resource_for_trace.resource_id,
+                    normalized_delta.acl_principal_ids,
+                    connector.tool,
+                )
 
         if not _trace_exists(db, connector.tool, normalized.external_event_id):
             traces_written += 1
@@ -130,7 +138,7 @@ def ingest_connector_batch(db: Session, connector: Connector, config: dict) -> d
                     action_type=normalized.action_type,
                     event_time=normalized.event_time.astimezone(UTC),
                     actor_principal_id=normalized.actor_principal_id,
-                    resource_id=resource.resource_id if resource else None,
+                    resource_id=resource_for_trace.resource_id if resource_for_trace else None,
                     related_resource_ids=[
                         ":".join(ref) for ref in normalized.related_resource_refs
                     ],

@@ -2,11 +2,16 @@
 set -eu
 
 PYTHON_BIN="${PYTHON_BIN:-python3}"
+STRICT_CHECKS="${STRICT_CHECKS:-0}"
 if command -v python >/dev/null 2>&1; then
   PYTHON_BIN=python
 fi
 
 if ! "$PYTHON_BIN" -c "import alembic" >/dev/null 2>&1; then
+  if [ "$STRICT_CHECKS" = "1" ]; then
+    echo "migration_check: alembic is required in strict mode"
+    exit 1
+  fi
   echo "migration_check: bootstrap skip (alembic not installed)"
   exit 0
 fi

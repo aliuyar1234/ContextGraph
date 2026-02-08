@@ -3,11 +3,16 @@ set -eu
 
 TMP="docs/openapi/.generated.json"
 PYTHON_BIN="${PYTHON_BIN:-python3}"
+STRICT_CHECKS="${STRICT_CHECKS:-0}"
 if command -v python >/dev/null 2>&1; then
   PYTHON_BIN=python
 fi
 
 if ! "$PYTHON_BIN" -c "import fastapi" >/dev/null 2>&1; then
+  if [ "$STRICT_CHECKS" = "1" ]; then
+    echo "openapi_check: fastapi is required in strict mode"
+    exit 1
+  fi
   echo "openapi_check: bootstrap skip (fastapi not installed in active interpreter)"
   exit 0
 fi

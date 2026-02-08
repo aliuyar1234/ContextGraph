@@ -16,6 +16,11 @@ ROOT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
 cd "$ROOT_DIR"
 
 FAILED=0
+STRICT_CHECKS=0
+if [ "$PROFILE" = "ci" ] || [ "$PROFILE" = "full" ]; then
+  STRICT_CHECKS=1
+fi
+export STRICT_CHECKS
 
 print_stage() {
   echo
@@ -67,6 +72,14 @@ check_typecheck() {
     return
   fi
   pass_stage "typecheck (bootstrap no-op)"
+}
+
+check_frontend() {
+  if [ -f "scripts/frontend_check.sh" ]; then
+    run_script_if_present "frontend build" "scripts/frontend_check.sh"
+    return
+  fi
+  pass_stage "frontend build (bootstrap no-op)"
 }
 
 check_unit() {
@@ -198,6 +211,11 @@ check_lint
 
 print_stage "typecheck"
 check_typecheck
+
+if [ "$PROFILE" = "ci" ] || [ "$PROFILE" = "full" ]; then
+  print_stage "frontend build"
+  check_frontend
+fi
 
 print_stage "unit tests"
 check_unit

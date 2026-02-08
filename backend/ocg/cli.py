@@ -1,4 +1,5 @@
 import json
+import time
 from pathlib import Path
 
 import typer
@@ -11,16 +12,19 @@ from ocg.core.settings import get_settings
 from ocg.db import models
 from ocg.db.session import SessionLocal
 from ocg.services import aggregation, identity, ingest, kg, personal
-from ocg.workers import jobs
+from ocg.workers import jobs, runtime
+from ocg.workers.queues import ALL_QUEUES
 
 app = typer.Typer(help="Open Context Graph CLI")
 migrate_app = typer.Typer(help="Migration commands")
 seed_app = typer.Typer(help="Seed commands")
 diag_app = typer.Typer(help="Diagnostic commands")
+worker_app = typer.Typer(help="Worker and scheduler commands")
 
 app.add_typer(migrate_app, name="migrate")
 app.add_typer(seed_app, name="seed")
 app.add_typer(diag_app, name="diagnostics")
+app.add_typer(worker_app, name="worker")
 
 
 def _alembic_cfg() -> Config:
@@ -96,6 +100,70 @@ def diagnostics_connectors() -> None:
             typer.echo(f"{row.tool}: enabled={row.enabled}")
     finally:
         db.close()
+
+
+@worker_app.command("run")
+def worker_run_command(
+    queues: str = typer.Option(
+        ",".join(ALL_QUEUES), help="Comma-separated queue names to process."
+    ),
+    burst: bool = typer.Option(False, help="Process pending jobs and exit."),
+) -> None:
+    queue_names = runtime.parse_queue_names(queues)
+    typer.echo(f"worker starting for queues: {','.join(queue_names)}")
+    runtime.run_worker(queues=queue_names, burst=burst)
+
+
+@worker_app.command("tick")
+def worker_tick(
+    include_identity: bool = typer.Option(
+        True, help="Enqueue identity/KG refresh job in this cycle."
+    ),
+    include_aggregation: bool = typer.Option(
+        True, help="Enqueue aggregation publish job in this cycle."
+    ),
+) -> None:
+    payload = runtime.enqueue_cycle(
+        include_identity=include_identity,
+        include_aggregation=include_aggregation,
+    )
+    typer.echo(json.dumps(payload, indent=2, sort_keys=True))
+
+
+@worker_app.command("scheduler")
+def worker_scheduler(
+    interval_seconds: int = typer.Option(
+        0,
+        help="Scheduler interval in seconds (0 = use configured default).",
+    ),
+    once: bool = typer.Option(False, help="Run one enqueue cycle and exit."),
+    include_identity: bool = typer.Option(
+        True, help="Enqueue identity/KG refresh in each cycle."
+    ),
+    include_aggregation: bool = typer.Option(
+        True, help="Enqueue aggregation publish in each cycle."
+    ),
+) -> None:
+    settings = get_settings()
+    effective_interval = interval_seconds or settings.worker_scheduler_interval_seconds
+    if effective_interval <= 0:
+        raise typer.BadParameter("interval must be > 0")
+
+    while True:
+        payload = runtime.enqueue_cycle(
+            include_identity=include_identity,
+            include_aggregation=include_aggregation,
+        )
+        typer.echo(json.dumps(payload, indent=2, sort_keys=True))
+        if once:
+            return
+        time.sleep(effective_interval)
+
+
+@worker_app.command("stats")
+def worker_stats() -> None:
+    payload = runtime.queue_depths()
+    typer.echo(json.dumps(payload, indent=2, sort_keys=True))
 
 
 @app.command("worker-run")

@@ -35,6 +35,10 @@ class Settings(BaseSettings):
     retention_context_days: int = 365
 
     jwt_clock_skew_seconds: int = 60
+    worker_scheduler_interval_seconds: int = 120
+    worker_job_timeout_seconds: int = 600
+    worker_result_ttl_seconds: int = 600
+    worker_failure_ttl_seconds: int = 86_400
 
 
 @lru_cache(maxsize=1)

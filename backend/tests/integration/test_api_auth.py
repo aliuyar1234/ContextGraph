@@ -3,7 +3,7 @@ from datetime import UTC, datetime, timedelta
 import jwt
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from ocg.api.deps import get_db
@@ -61,12 +61,26 @@ def test_health_is_public():
     client, _ = _build_client()
     res = client.get("/healthz")
     assert res.status_code == 200
+    assert len(res.headers["X-Trace-Id"]) == 32
+    assert res.headers["traceparent"].startswith("00-")
 
 
 def test_auth_required_for_non_health():
     client, _ = _build_client()
     res = client.get("/api/v1/personal/timeline")
     assert res.status_code == 401
+    assert res.json()["error"]["trace_id"]
+
+
+def test_traceparent_propagates_trace_id():
+    client, _ = _build_client()
+    incoming_trace_id = "0123456789abcdef0123456789abcdef"
+    incoming_span_id = "0123456789abcdef"
+    traceparent = f"00-{incoming_trace_id}-{incoming_span_id}-01"
+    res = client.get("/healthz", headers={"traceparent": traceparent})
+    assert res.status_code == 200
+    assert res.headers["X-Trace-Id"] == incoming_trace_id
+    assert incoming_trace_id in res.headers["traceparent"]
 
 
 def test_admin_rbac_enforced():
