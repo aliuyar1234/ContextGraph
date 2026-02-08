@@ -13,6 +13,8 @@ It combines fail-closed permission enforcement, private personal timelines, and 
 - [Why OCG](#why-ocg)
 - [Core capabilities](#core-capabilities)
 - [Architecture at a glance](#architecture-at-a-glance)
+- [Architecture overview (Mermaid)](#architecture-overview-mermaid)
+- [Demo story screenshots (desktop)](#demo-story-screenshots-desktop)
 - [Quick start (Docker Compose)](#quick-start-docker-compose)
 - [Local development](#local-development)
 - [Configuration essentials](#configuration-essentials)
@@ -54,6 +56,54 @@ It combines fail-closed permission enforcement, private personal timelines, and 
 | `ops/` | Prometheus scrape config, alert rules, Grafana dashboards |
 | `docs/openapi/` | OpenAPI compatibility baseline artifact |
 | `spec/` | Normative SSOT contracts, gates, runbook, and acceptance plan |
+
+## Architecture overview (Mermaid)
+```mermaid
+flowchart LR
+  subgraph UserLayer["User Layer"]
+    Browser["Browser UI<br/>(Overview/Admin/Analytics/Personal)"]
+  end
+
+  subgraph AppLayer["Application Layer"]
+    UI["Next.js Frontend"]
+    API["FastAPI API<br/>Auth + Query + Policy"]
+    Workers["Worker Runtime<br/>Ingest + Personal + Aggregation"]
+  end
+
+  subgraph DataLayer["Data Layer"]
+    PG[("PostgreSQL<br/>events + graph + aggregates")]
+    RQ[("Redis<br/>job queues")]
+  end
+
+  subgraph External["External Systems"]
+    OIDC["OIDC Provider"]
+    Tools["Slack / Jira / GitHub"]
+  end
+
+  subgraph Observe["Observability"]
+    Prom["Prometheus + Grafana"]
+  end
+
+  Browser --> UI
+  UI --> API
+  API --> OIDC
+  API --> PG
+  API --> RQ
+  Workers --> RQ
+  Workers --> PG
+  Workers --> Tools
+  API --> Prom
+  Workers --> Prom
+```
+
+## Demo story screenshots (desktop)
+Overview:
+
+![Story Overview](docs/screenshots/story-01-overview.png)
+
+Sales-to-Delivery handoff:
+
+![Story Sales to Delivery](docs/screenshots/story-04-analytics-sales.png)
 
 ## Quick start (Docker Compose)
 Prerequisites:

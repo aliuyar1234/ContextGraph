@@ -42,33 +42,48 @@ export default function PersonalPage() {
   }, []);
 
   return (
-    <section>
-      <h1 className="headline">Personal Timeline</h1>
-      <article className="card">
-        <label>
-          <input type="checkbox" checked={optIn} onChange={(e) => toggleOptIn(e.currentTarget.checked)} /> Opt in to
-          aggregation
+    <section className="stack">
+      <header className="section-intro reveal">
+        <p className="eyebrow">Personal View</p>
+        <h1 className="headline">Personal Timeline</h1>
+        <p className="subtitle">Private by default. Explicit opt-in is required before aggregation.</p>
+      </header>
+      <article className="panel reveal">
+        <label className="form-row inline">
+          <input type="checkbox" checked={optIn} onChange={(e) => toggleOptIn(e.currentTarget.checked)} />
+          <span>Opt in to aggregation</span>
         </label>
       </article>
-      <div className="grid">
-        <article className="card">
-          <h3>Timeline</h3>
-          {timeline.map((item) => (
-            <p key={item.trace_event_id}>
-              #{item.sequence_rank} {item.action_type} at {new Date(item.event_time).toLocaleString()}
-            </p>
-          ))}
+      <div className="panel-grid two">
+        <article className="panel reveal">
+          <h2 className="panel-title">Timeline</h2>
+          <div className="list">
+            {timeline.length === 0 ? <p className="muted">No events captured for this user yet.</p> : null}
+            {timeline.map((item) => (
+              <div className="row-line" key={item.trace_event_id}>
+                <div>
+                  <p className="row-title">
+                    #{item.sequence_rank} {item.action_type}
+                  </p>
+                  <p className="metric">{new Date(item.event_time).toLocaleString()}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </article>
-        <article className="card">
-          <h3>Tasks</h3>
-          {tasks.map((task) => (
-            <p key={task.personal_task_id}>
-              {task.label} ({Math.round(task.confidence * 100)}%)
-            </p>
-          ))}
+        <article className="panel reveal">
+          <h2 className="panel-title">Tasks</h2>
+          <div className="list">
+            {tasks.length === 0 ? <p className="muted">No clustered tasks yet.</p> : null}
+            {tasks.map((task) => (
+              <div className="row-line" key={task.personal_task_id}>
+                <p className="row-title">{task.label}</p>
+                <span className="badge">{Math.round(task.confidence * 100)}%</span>
+              </div>
+            ))}
+          </div>
         </article>
       </div>
     </section>
   );
 }
-

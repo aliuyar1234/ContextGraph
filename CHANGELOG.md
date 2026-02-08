@@ -119,3 +119,20 @@ This changelog tracks changes to the SSOT pack itself (docs, structure, gates, c
 - Updated change-control records and regenerated manifest integrity root.
   - evidence: AUDIT_REPORT.md :: IMPLEMENTATION_AUDIT (2026-02-08 README_UX_REFRESH)
   - evidence: checks/CHECKS_INDEX.md :: CHK-MANIFEST-VERIFY
+
+## v2.6 (neural analytics demo + story screenshots)
+- Implemented an upgraded analytics experience with a neuron-style context graph and richer scenario-driven demo states.
+  - added curated multi-scenario process stories (including 50-person org, sales-to-delivery handoff, and customer escalation to engineering)
+  - added visible graph interaction state badges (zoom/pan) and critical-path activation state
+  - evidence: frontend/app/analytics/page.tsx :: const DEMO_STORIES
+  - evidence: frontend/app/analytics/page.tsx :: View {zoomLabel}
+  - evidence: frontend/app/analytics/page.tsx :: Critical Path Active
+- Refreshed the global UI style system and dashboard page layouts to support the new visual direction across overview/admin/analytics/personal.
+  - evidence: frontend/app/globals.css :: .analytics-shell
+  - evidence: frontend/app/page.tsx :: Minimal process intelligence. Maximum privacy discipline.
+  - evidence: frontend/app/admin/page.tsx :: Admin Console
+- Added desktop story screenshots and embedded the requested screenshots in `README.md` plus a Mermaid architecture overview.
+  - evidence: README.md :: Architecture overview (Mermaid)
+  - evidence: README.md :: Demo story screenshots (desktop)
+  - evidence: MANIFEST.sha256 :: docs/screenshots/story-01-overview.png
+  - evidence: MANIFEST.sha256 :: docs/screenshots/story-04-analytics-sales.png

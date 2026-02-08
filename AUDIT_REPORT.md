@@ -169,3 +169,24 @@
   - Required SSOT anchor sections remain present for evidence/gate compatibility.
     - evidence: README.md :: Where to find X (index)
     - evidence: README.md :: Drift detection
+
+## IMPLEMENTATION_AUDIT (2026-02-08 NEURAL_UI_DEMO_STORY)
+- result: PASS WITH ENVIRONMENT NOTE
+- top findings:
+  - Analytics UI now includes a neuron-style context graph with scenario presets, critical-flow focus control, and interaction state indicators.
+    - evidence: frontend/app/analytics/page.tsx :: const DEMO_STORIES
+    - evidence: frontend/app/analytics/page.tsx :: Critical Path Active
+    - evidence: frontend/app/analytics/page.tsx :: View {zoomLabel}
+  - Shared frontend styling and route pages were updated to provide a cohesive visual system across overview/admin/analytics/personal.
+    - evidence: frontend/app/globals.css :: .app-shell
+    - evidence: frontend/app/page.tsx :: Minimal process intelligence. Maximum privacy discipline.
+    - evidence: frontend/app/personal/page.tsx :: Personal Timeline
+  - README now includes a medium-detail Mermaid architecture diagram and embedded desktop story screenshots for project presentation.
+    - evidence: README.md :: Architecture overview (Mermaid)
+    - evidence: README.md :: Demo story screenshots (desktop)
+  - Validation status:
+    - frontend production build passed.
+      - evidence: frontend/package.json :: "build": "next build"
+    - repository fast-check path runs through format/lint/typecheck/unit/secret/redaction and fails at migration stage in Git-Bash due Windows path conversion (`/e/...` -> invalid SQLite path).
+      - evidence: scripts/check.sh :: check profile: $PROFILE
+      - evidence: scripts/migration_check.sh :: export OCG_DATABASE_URL="sqlite+pysqlite:///$(pwd)/$TMP_DB"

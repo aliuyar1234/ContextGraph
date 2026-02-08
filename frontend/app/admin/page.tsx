@@ -68,55 +68,78 @@ export default function AdminPage() {
   }
 
   return (
-    <section>
-      <h1 className="headline">Admin Console</h1>
-      <div className="grid">
-        <article className="card">
-          <h3>Connector Health</h3>
-          {connectors.length === 0 ? <p>No connectors configured yet.</p> : null}
-          {connectors.map((row) => (
-            <p key={row.tool}>
-              <strong>{row.tool}</strong> : {row.enabled ? "enabled" : "disabled"}{" "}
-              <button onClick={() => toggle(row.tool, !row.enabled)}>
-                {row.enabled ? "disable" : "enable"}
-              </button>
-            </p>
-          ))}
+    <section className="stack">
+      <header className="section-intro reveal">
+        <p className="eyebrow">Operations</p>
+        <h1 className="headline">Admin Console</h1>
+        <p className="subtitle">Connector status and retention controls for privacy-safe publishing.</p>
+      </header>
+      <div className="panel-grid two">
+        <article className="panel reveal">
+          <div className="panel-head">
+            <h2 className="panel-title">Connector Health</h2>
+            <span className="badge">{connectors.length} configured</span>
+          </div>
+          <div className="list">
+            {connectors.length === 0 ? <p className="muted">No connectors configured yet.</p> : null}
+            {connectors.map((row) => (
+              <div className="row-line" key={row.tool}>
+                <div>
+                  <p className="row-title">{row.tool}</p>
+                  <p className="metric">Updated {new Date(row.updated_at).toLocaleString()}</p>
+                </div>
+                <div className="row-actions">
+                  <span className={`badge ${row.enabled ? "ok" : "off"}`}>
+                    {row.enabled ? "enabled" : "disabled"}
+                  </span>
+                  <button className="button ghost" onClick={() => toggle(row.tool, !row.enabled)}>
+                    {row.enabled ? "Disable" : "Enable"}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </article>
-        <article className="card">
-          <h3>Retention</h3>
-          <p>Publishing stops automatically if retention is disabled.</p>
-          <label>
-            <input
-              type="checkbox"
-              checked={retentionEnabled}
-              onChange={(e) => setRetentionEnabled(e.currentTarget.checked)}
-            />{" "}
-            Retention enabled
-          </label>
-          <p>
-            Raw days{" "}
-            <input value={rawDays} type="number" min={1} onChange={(e) => setRawDays(Number(e.currentTarget.value))} />
-          </p>
-          <p>
-            Trace days{" "}
-            <input
-              value={traceDays}
-              type="number"
-              min={1}
-              onChange={(e) => setTraceDays(Number(e.currentTarget.value))}
-            />
-          </p>
-          <p>
-            Context days{" "}
-            <input
-              value={contextDays}
-              type="number"
-              min={1}
-              onChange={(e) => setContextDays(Number(e.currentTarget.value))}
-            />
-          </p>
-          <button onClick={saveRetention}>Save retention</button>
+        <article className="panel reveal">
+          <h2 className="panel-title">Retention</h2>
+          <p className="kicker">Publishing stops automatically if retention is disabled.</p>
+          <div className="form-card">
+            <label className="form-row inline">
+              <input
+                type="checkbox"
+                checked={retentionEnabled}
+                onChange={(e) => setRetentionEnabled(e.currentTarget.checked)}
+              />
+              <span>Retention enabled</span>
+            </label>
+            <label className="form-row">
+              <span>Raw days</span>
+              <input value={rawDays} type="number" min={1} onChange={(e) => setRawDays(Number(e.currentTarget.value))} />
+            </label>
+            <label className="form-row">
+              <span>Trace days</span>
+              <input
+                value={traceDays}
+                type="number"
+                min={1}
+                onChange={(e) => setTraceDays(Number(e.currentTarget.value))}
+              />
+            </label>
+            <label className="form-row">
+              <span>Context days</span>
+              <input
+                value={contextDays}
+                type="number"
+                min={1}
+                onChange={(e) => setContextDays(Number(e.currentTarget.value))}
+              />
+            </label>
+            <div className="form-actions">
+              <button className="button accent" onClick={saveRetention}>
+                Save retention
+              </button>
+            </div>
+          </div>
         </article>
       </div>
     </section>

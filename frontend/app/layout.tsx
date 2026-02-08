@@ -12,24 +12,29 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en">
       <body>
         <main className="shell">
-          <nav className="topnav">
-            <Link className="chip" href="/">
-              Overview
-            </Link>
-            <Link className="chip" href="/admin">
-              Admin
-            </Link>
-            <Link className="chip" href="/analytics">
-              Analytics
-            </Link>
-            <Link className="chip" href="/personal">
-              Personal
-            </Link>
-          </nav>
+          <header className="site-header reveal">
+            <div className="brand-row">
+              <p className="eyebrow">Open Context Graph</p>
+              <p className="brand-note">privacy-first process intelligence</p>
+            </div>
+            <nav className="topnav">
+              <Link className="chip" href="/">
+                Overview
+              </Link>
+              <Link className="chip" href="/admin">
+                Admin
+              </Link>
+              <Link className="chip" href="/analytics">
+                Analytics
+              </Link>
+              <Link className="chip" href="/personal">
+                Personal
+              </Link>
+            </nav>
+          </header>
           {children}
         </main>
       </body>
     </html>
   );
 }
-
