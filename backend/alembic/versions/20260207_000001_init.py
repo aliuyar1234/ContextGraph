@@ -51,7 +51,9 @@ def upgrade() -> None:
         sa.Column("permission_state", sa.String(32), nullable=False),
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
         sa.Column("updated_at", sa.DateTime(timezone=True), nullable=False),
-        sa.UniqueConstraint("tool", "resource_type", "external_id", name="uq_resource_external_ref"),
+        sa.UniqueConstraint(
+            "tool", "resource_type", "external_id", name="uq_resource_external_ref"
+        ),
     )
     op.create_table(
         "raw_event",
@@ -112,9 +114,14 @@ def upgrade() -> None:
         sa.Column("action_type", sa.String(64), nullable=False),
         sa.Column("event_time", sa.DateTime(timezone=True), nullable=False),
         sa.Column(
-            "actor_principal_id", sa.String(64), sa.ForeignKey("principal.principal_id"), nullable=True
+            "actor_principal_id",
+            sa.String(64),
+            sa.ForeignKey("principal.principal_id"),
+            nullable=True,
         ),
-        sa.Column("resource_id", sa.String(36), sa.ForeignKey("resource.resource_id"), nullable=True),
+        sa.Column(
+            "resource_id", sa.String(36), sa.ForeignKey("resource.resource_id"), nullable=True
+        ),
         sa.Column("related_resource_ids", sa.JSON(), nullable=False),
         sa.Column("entity_tags_json", sa.JSON(), nullable=False),
         sa.Column("metadata_json", sa.JSON(), nullable=False),
@@ -131,7 +138,10 @@ def upgrade() -> None:
         "personal_timeline_item",
         sa.Column("person_id", sa.String(64), sa.ForeignKey("person.person_id"), primary_key=True),
         sa.Column(
-            "trace_event_id", sa.String(36), sa.ForeignKey("trace_event.trace_event_id"), primary_key=True
+            "trace_event_id",
+            sa.String(36),
+            sa.ForeignKey("trace_event.trace_event_id"),
+            primary_key=True,
         ),
         sa.Column("sequence_rank", sa.BigInteger(), nullable=False),
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
@@ -170,7 +180,10 @@ def upgrade() -> None:
     op.create_table(
         "context_edge",
         sa.Column(
-            "pattern_id", sa.String(36), sa.ForeignKey("context_pattern.pattern_id"), primary_key=True
+            "pattern_id",
+            sa.String(36),
+            sa.ForeignKey("context_pattern.pattern_id"),
+            primary_key=True,
         ),
         sa.Column("from_step_hash", sa.String(128), primary_key=True),
         sa.Column("to_step_hash", sa.String(128), primary_key=True),
@@ -203,8 +216,12 @@ def upgrade() -> None:
     op.create_table(
         "kg_edge",
         sa.Column("edge_id", sa.String(36), primary_key=True),
-        sa.Column("src_entity_id", sa.String(64), sa.ForeignKey("kg_entity.entity_id"), nullable=False),
-        sa.Column("dst_entity_id", sa.String(64), sa.ForeignKey("kg_entity.entity_id"), nullable=False),
+        sa.Column(
+            "src_entity_id", sa.String(64), sa.ForeignKey("kg_entity.entity_id"), nullable=False
+        ),
+        sa.Column(
+            "dst_entity_id", sa.String(64), sa.ForeignKey("kg_entity.entity_id"), nullable=False
+        ),
         sa.Column("edge_type", sa.String(128), nullable=False),
         sa.Column("confidence", sa.Float(), nullable=False),
         sa.Column("evidence_trace_event_ids", sa.JSON(), nullable=False),
@@ -249,4 +266,3 @@ def downgrade() -> None:
         "connector_config",
     ]:
         op.drop_table(table)
-

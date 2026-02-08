@@ -101,3 +101,10 @@ This changelog tracks changes to the SSOT pack itself (docs, structure, gates, c
   - frontend build, unit/integration tests, migration check, and OpenAPI compatibility pass
   - remaining failure is backend format drift under strict `format` stage
   - evidence: scripts/check.sh :: check profile: ci
+
+## v2.4 (backend formatting debt resolution)
+- Applied repository Ruff formatting baseline across backend Python sources.
+  - evidence: DECISIONS.md :: D-0018 Backend codebase adopts repository-wide Ruff formatting baseline
+- Re-ran strict `CHECK_PROFILE=ci` with isolated SQLite migration URL:
+  - all stages now pass (format, lint, typecheck, frontend build, unit/integration, migration, secret/redaction, OpenAPI).
+  - evidence: scripts/check.sh :: check passed

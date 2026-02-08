@@ -227,3 +227,4 @@ Indexes:
 - Operational index expansion implemented at `backend/alembic/versions/20260208_000002_add_operational_indexes.py` for hot paths and ACL joins.
 - CLI migration commands are available via `python -m ocg.cli migrate up|down`.
 - Migration validation test exists in `backend/tests/integration/test_migrations.py`.
+- Datastore/migration Python modules are aligned with the repository Ruff formatting baseline.

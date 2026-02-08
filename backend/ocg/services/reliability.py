@@ -31,7 +31,8 @@ def retry_with_backoff(
         except Exception as exc:  # noqa: BLE001
             if attempt >= policy.max_attempts or not retryable(exc):
                 raise
-            sleep_for = min(policy.base_delay_seconds * (2 ** (attempt - 1)), policy.max_delay_seconds)
+            sleep_for = min(
+                policy.base_delay_seconds * (2 ** (attempt - 1)), policy.max_delay_seconds
+            )
             sleep_for = sleep_for + random.uniform(0, sleep_for / 2)
             time.sleep(sleep_for)
-

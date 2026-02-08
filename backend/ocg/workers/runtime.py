@@ -85,7 +85,9 @@ def enqueue_connector_sync(tool: str, *, connection: Redis | None = None) -> dic
     own_connection = connection is None
     conn = connection or redis_connection()
     try:
-        ingest_job = _enqueue_job(CONNECTOR_INGEST_QUEUE, jobs.run_connector_ingest, tool, connection=conn)
+        ingest_job = _enqueue_job(
+            CONNECTOR_INGEST_QUEUE, jobs.run_connector_ingest, tool, connection=conn
+        )
         permissions_job = _enqueue_job(
             PERMISSIONS_SYNC_QUEUE,
             jobs.run_permissions_sync,

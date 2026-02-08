@@ -33,7 +33,9 @@ def list_connectors(
     _admin=Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> dict:
-    rows = db.scalars(select(models.ConnectorConfig).order_by(models.ConnectorConfig.tool.asc())).all()
+    rows = db.scalars(
+        select(models.ConnectorConfig).order_by(models.ConnectorConfig.tool.asc())
+    ).all()
     return {
         "connectors": [
             {
@@ -63,7 +65,9 @@ def enable_connector(
 
 
 @router.post("/{tool}/disable")
-def disable_connector(tool: str, _admin=Depends(require_admin), db: Session = Depends(get_db)) -> dict:
+def disable_connector(
+    tool: str, _admin=Depends(require_admin), db: Session = Depends(get_db)
+) -> dict:
     connector = CONNECTOR_REGISTRY.get(tool)
     if not connector:
         raise HTTPException(status_code=404, detail="Connector not supported.")
@@ -85,7 +89,9 @@ def sync_now(tool: str, _admin=Depends(require_admin), db: Session = Depends(get
 
 
 @router.get("/{tool}/health")
-def connector_health(tool: str, _admin=Depends(require_admin), db: Session = Depends(get_db)) -> dict:
+def connector_health(
+    tool: str, _admin=Depends(require_admin), db: Session = Depends(get_db)
+) -> dict:
     config = db.scalar(select(models.ConnectorConfig).where(models.ConnectorConfig.tool == tool))
     if not config:
         raise HTTPException(status_code=404, detail="Connector not configured.")

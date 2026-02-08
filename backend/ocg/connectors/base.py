@@ -73,4 +73,3 @@ class Connector(ABC):
     @staticmethod
     def now() -> datetime:
         return datetime.now(tz=UTC)
-

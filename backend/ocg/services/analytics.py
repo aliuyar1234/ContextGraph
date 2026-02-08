@@ -83,4 +83,3 @@ def bottlenecks(db: Session, pattern_id: str) -> list[dict]:
         }
         for row in ranked[:10]
     ]
-

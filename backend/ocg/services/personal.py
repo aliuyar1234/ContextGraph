@@ -12,7 +12,9 @@ from ocg.services.permissions import PermissionEvaluator
 def set_opt_in(db: Session, person_id: str, enabled: bool) -> models.PersonalOptIn:
     row = db.get(models.PersonalOptIn, person_id)
     if row is None:
-        row = models.PersonalOptIn(person_id=person_id, opt_in_aggregation=enabled, updated_at=utcnow())
+        row = models.PersonalOptIn(
+            person_id=person_id, opt_in_aggregation=enabled, updated_at=utcnow()
+        )
         db.add(row)
     else:
         row.opt_in_aggregation = enabled
@@ -29,10 +31,16 @@ def build_personal_timeline(db: Session, person_id: str, principal_ids: list[str
     allowed = [
         event
         for event in events
-        if PermissionEvaluator.event_visible_to_principals(db, event=event, principal_ids=principal_ids)
+        if PermissionEvaluator.event_visible_to_principals(
+            db, event=event, principal_ids=principal_ids
+        )
     ]
     allowed.sort(key=lambda ev: (ev.event_time, ev.trace_event_id))
-    db.execute(delete(models.PersonalTimelineItem).where(models.PersonalTimelineItem.person_id == person_id))
+    db.execute(
+        delete(models.PersonalTimelineItem).where(
+            models.PersonalTimelineItem.person_id == person_id
+        )
+    )
     for idx, event in enumerate(allowed, start=1):
         db.add(
             models.PersonalTimelineItem(
@@ -54,7 +62,9 @@ def cluster_personal_tasks(db: Session, person_id: str) -> int:
     ).all()
     event_by_id = {
         event.trace_event_id: event
-        for event in db.scalars(select(models.TraceEvent).where(models.TraceEvent.actor_principal_id == person_id))
+        for event in db.scalars(
+            select(models.TraceEvent).where(models.TraceEvent.actor_principal_id == person_id)
+        )
     }
     db.execute(delete(models.PersonalTask).where(models.PersonalTask.person_id == person_id))
 
@@ -92,10 +102,15 @@ def cluster_personal_tasks(db: Session, person_id: str) -> int:
     return len(tasks)
 
 
-def personal_timeline(db: Session, person_id: str, from_iso: str | None, to_iso: str | None) -> list[dict]:
+def personal_timeline(
+    db: Session, person_id: str, from_iso: str | None, to_iso: str | None
+) -> list[dict]:
     query = (
         select(models.PersonalTimelineItem, models.TraceEvent)
-        .join(models.TraceEvent, models.TraceEvent.trace_event_id == models.PersonalTimelineItem.trace_event_id)
+        .join(
+            models.TraceEvent,
+            models.TraceEvent.trace_event_id == models.PersonalTimelineItem.trace_event_id,
+        )
         .where(models.PersonalTimelineItem.person_id == person_id)
         .order_by(models.PersonalTimelineItem.sequence_rank.asc())
     )

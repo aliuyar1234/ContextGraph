@@ -21,4 +21,3 @@ def test_retries_are_bounded():
             retryable=lambda exc: isinstance(exc, RetryableError),
         )
     assert attempts["count"] == 3
-

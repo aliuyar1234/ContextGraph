@@ -173,3 +173,4 @@ flowchart TB
 - API service implemented in `backend/ocg/main.py` with route modules in `backend/ocg/api`.
 - Worker jobs implemented in `backend/ocg/workers/jobs.py` with queue names in `backend/ocg/workers/queues.py` and runtime orchestration in `backend/ocg/workers/runtime.py`.
 - Docker Compose day-0 stack includes dedicated `workers` (RQ consumer) and `scheduler` (periodic enqueue) services in `docker-compose.yml`.
+- Backend Python implementation files are normalized to the active Ruff formatting baseline to keep strict CI formatting checks green.

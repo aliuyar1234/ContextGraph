@@ -155,7 +155,8 @@ Trust crossings:
   - connector enable/disable, retention changes, auth config changes.
 - Audit log MUST NOT include secrets or raw content.
 
-## Implementation status snapshot (2026-02-07)
+## Implementation status snapshot (2026-02-08)
 - OIDC JWT validation + RBAC implemented in `backend/ocg/core/security.py` and `backend/ocg/api/deps.py`.
 - Non-local bind fail-closed startup validation implemented in `validate_startup_security`.
 - Dev-header auth mode requires explicit `OCG_DEV_AUTH_ENABLED=true` and is intended for local/demo workflows.
+- Security/auth implementation modules are aligned with the repository Ruff formatting baseline.

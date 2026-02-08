@@ -60,7 +60,9 @@ def _upsert_resource(db: Session, delta: ResourceDelta) -> models.Resource:
     return resource
 
 
-def _sync_resource_acl(db: Session, resource_id: str, principal_ids: list[str], source: str) -> None:
+def _sync_resource_acl(
+    db: Session, resource_id: str, principal_ids: list[str], source: str
+) -> None:
     for principal_id in principal_ids:
         _ensure_principal(db, principal_id)
         duplicate_pending = any(
@@ -207,7 +209,9 @@ def sync_permissions(db: Session, connector: Connector, config: dict) -> dict[st
     return {"resources": touched}
 
 
-def set_connector_enabled(db: Session, tool: str, enabled: bool, config: dict) -> models.ConnectorConfig:
+def set_connector_enabled(
+    db: Session, tool: str, enabled: bool, config: dict
+) -> models.ConnectorConfig:
     row = db.scalar(select(models.ConnectorConfig).where(models.ConnectorConfig.tool == tool))
     now = utcnow()
     if not row:

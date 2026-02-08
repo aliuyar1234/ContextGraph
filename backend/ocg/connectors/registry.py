@@ -9,4 +9,3 @@ CONNECTOR_REGISTRY: dict[str, Connector] = {
     "jira": JiraConnector(),
     "github": GitHubConnector(),
 }
-

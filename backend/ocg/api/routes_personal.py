@@ -45,4 +45,3 @@ def opt_in_aggregation(
 ) -> dict:
     row = personal.set_opt_in(db, context.person_id, body.enabled)
     return {"person_id": row.person_id, "opt_in_aggregation": row.opt_in_aggregation}
-

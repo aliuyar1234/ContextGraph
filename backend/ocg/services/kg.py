@@ -13,7 +13,8 @@ def infer_kg_entities(db: Session) -> dict[str, int]:
         for entity_type in tags.get("entity_type_tags", []):
             key = f"{entity_type.lower()}:{event.tool}"
             pending_entity_exists = any(
-                isinstance(pending, models.KGEntity) and pending.entity_id == key for pending in db.new
+                isinstance(pending, models.KGEntity) and pending.entity_id == key
+                for pending in db.new
             )
             entity = db.scalar(select(models.KGEntity).where(models.KGEntity.canonical_key == key))
             if not entity and not pending_entity_exists:

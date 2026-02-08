@@ -165,3 +165,4 @@ Response:
 - OpenAPI baseline artifact is tracked at `docs/openapi/openapi.v1.json` and checked by `scripts/openapi_check.sh`.
 - CI compatibility guard uses the same command path via `make check CHECK_PROFILE=ci`.
 - Error envelopes include both `request_id` and `trace_id` for cross-system correlation.
+- API route implementation files are now aligned with the repository Ruff formatter baseline.

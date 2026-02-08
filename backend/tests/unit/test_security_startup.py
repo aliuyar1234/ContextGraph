@@ -19,4 +19,3 @@ def test_public_bind_requires_oidc_config():
 def test_local_bind_allows_missing_oidc():
     settings = Settings(server_bind="127.0.0.1", auth_mode="oidc")
     validate_startup_security(settings)
-

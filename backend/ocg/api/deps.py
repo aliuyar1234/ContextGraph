@@ -42,4 +42,3 @@ def require_analytics_role(
     allowed = {role.strip() for role in settings.analytics_viewer_roles.split(",") if role.strip()}
     require_role(context, allowed or {"analyst", "admin"})
     return context
-

@@ -11,7 +11,11 @@ def _seed_person(db, person_id: str) -> None:
     else:
         person_exists = False
     if not person_exists:
-        db.add(models.Person(person_id=person_id, primary_email=None, display_name=person_id, created_at=utcnow()))
+        db.add(
+            models.Person(
+                person_id=person_id, primary_email=None, display_name=person_id, created_at=utcnow()
+            )
+        )
     if not db.get(models.Principal, person_id):
         db.add(
             models.Principal(

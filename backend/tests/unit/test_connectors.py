@@ -15,4 +15,3 @@ def test_connectors_require_secret_ref(connector):
 def test_connectors_reject_write_scope(connector):
     with pytest.raises(ValueError):
         connector.validate({"auth": {"token_ref": "env:TOKEN"}, "scopes": ["repo:write"]})
-

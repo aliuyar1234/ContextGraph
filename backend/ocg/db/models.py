@@ -39,7 +39,9 @@ class RawEvent(Base):
     fetched_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     payload_json: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     permission_state: Mapped[str] = mapped_column(String(32), nullable=False)
-    __table_args__ = (UniqueConstraint("tool", "external_event_id", name="uq_raw_event_tool_external"),)
+    __table_args__ = (
+        UniqueConstraint("tool", "external_event_id", name="uq_raw_event_tool_external"),
+    )
 
 
 class Resource(Base):
@@ -76,7 +78,9 @@ class Identity(Base):
     person_id: Mapped[str] = mapped_column(ForeignKey("person.person_id"), nullable=False)
     confidence: Mapped[float] = mapped_column(Float, nullable=False, default=0.5)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
-    __table_args__ = (UniqueConstraint("tool", "external_user_id", name="uq_identity_tool_external"),)
+    __table_args__ = (
+        UniqueConstraint("tool", "external_user_id", name="uq_identity_tool_external"),
+    )
 
 
 class Principal(Base):
@@ -102,7 +106,9 @@ class PrincipalMembership(Base):
 class ResourceACL(Base):
     __tablename__ = "resource_acl"
     resource_id: Mapped[str] = mapped_column(ForeignKey("resource.resource_id"), primary_key=True)
-    principal_id: Mapped[str] = mapped_column(ForeignKey("principal.principal_id"), primary_key=True)
+    principal_id: Mapped[str] = mapped_column(
+        ForeignKey("principal.principal_id"), primary_key=True
+    )
     granted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), primary_key=True)
     acl_source: Mapped[str] = mapped_column(String(64), nullable=False)
     revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
@@ -119,7 +125,9 @@ class TraceEvent(Base):
     actor_principal_id: Mapped[str | None] = mapped_column(
         ForeignKey("principal.principal_id"), nullable=True
     )
-    resource_id: Mapped[str | None] = mapped_column(ForeignKey("resource.resource_id"), nullable=True)
+    resource_id: Mapped[str | None] = mapped_column(
+        ForeignKey("resource.resource_id"), nullable=True
+    )
     related_resource_ids: Mapped[list[str]] = mapped_column(JSON, nullable=False, default=list)
     entity_tags_json: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     metadata_json: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
@@ -139,7 +147,9 @@ class PersonalOptIn(Base):
 class PersonalTimelineItem(Base):
     __tablename__ = "personal_timeline_item"
     person_id: Mapped[str] = mapped_column(ForeignKey("person.person_id"), primary_key=True)
-    trace_event_id: Mapped[str] = mapped_column(ForeignKey("trace_event.trace_event_id"), primary_key=True)
+    trace_event_id: Mapped[str] = mapped_column(
+        ForeignKey("trace_event.trace_event_id"), primary_key=True
+    )
     sequence_rank: Mapped[int] = mapped_column(Integer, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
 
@@ -193,7 +203,9 @@ class ContextEdge(Base):
 class ContextPathVariant(Base):
     __tablename__ = "context_path_variant"
     variant_id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
-    pattern_id: Mapped[str] = mapped_column(ForeignKey("context_pattern.pattern_id"), nullable=False)
+    pattern_id: Mapped[str] = mapped_column(
+        ForeignKey("context_pattern.pattern_id"), nullable=False
+    )
     rank: Mapped[int] = mapped_column(Integer, nullable=False)
     step_hashes: Mapped[list[str]] = mapped_column(JSON, nullable=False, default=list)
     frequency: Mapped[float] = mapped_column(Float, nullable=False)
@@ -236,4 +248,3 @@ class AuditLog(Base):
     action: Mapped[str] = mapped_column(String(128), nullable=False)
     metadata_json: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
-

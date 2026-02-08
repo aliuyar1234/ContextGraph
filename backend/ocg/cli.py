@@ -64,7 +64,9 @@ def seed_demo() -> None:
             )
 
         for tool, connector in CONNECTOR_REGISTRY.items():
-            cfg = db.scalar(select(models.ConnectorConfig).where(models.ConnectorConfig.tool == tool))
+            cfg = db.scalar(
+                select(models.ConnectorConfig).where(models.ConnectorConfig.tool == tool)
+            )
             ingest.ingest_connector_batch(db, connector, cfg.config_json if cfg else {})
             ingest.sync_permissions(db, connector, cfg.config_json if cfg else {})
 
@@ -92,7 +94,9 @@ def seed_demo() -> None:
 def diagnostics_connectors() -> None:
     db = SessionLocal()
     try:
-        rows = db.scalars(select(models.ConnectorConfig).order_by(models.ConnectorConfig.tool.asc())).all()
+        rows = db.scalars(
+            select(models.ConnectorConfig).order_by(models.ConnectorConfig.tool.asc())
+        ).all()
         if not rows:
             typer.echo("no connector config")
             return
@@ -137,9 +141,7 @@ def worker_scheduler(
         help="Scheduler interval in seconds (0 = use configured default).",
     ),
     once: bool = typer.Option(False, help="Run one enqueue cycle and exit."),
-    include_identity: bool = typer.Option(
-        True, help="Enqueue identity/KG refresh in each cycle."
-    ),
+    include_identity: bool = typer.Option(True, help="Enqueue identity/KG refresh in each cycle."),
     include_aggregation: bool = typer.Option(
         True, help="Enqueue aggregation publish in each cycle."
     ),
@@ -204,7 +206,11 @@ def delete_user(person_id: str) -> None:
     db = SessionLocal()
     try:
         db.execute(delete(models.PersonalTask).where(models.PersonalTask.person_id == person_id))
-        db.execute(delete(models.PersonalTimelineItem).where(models.PersonalTimelineItem.person_id == person_id))
+        db.execute(
+            delete(models.PersonalTimelineItem).where(
+                models.PersonalTimelineItem.person_id == person_id
+            )
+        )
         db.execute(delete(models.PersonalOptIn).where(models.PersonalOptIn.person_id == person_id))
         db.execute(delete(models.Identity).where(models.Identity.person_id == person_id))
         db.execute(delete(models.Person).where(models.Person.person_id == person_id))

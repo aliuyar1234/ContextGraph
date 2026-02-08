@@ -47,4 +47,3 @@ class PermissionEvaluator:
         return PermissionEvaluator.resource_visible_to_principals(
             db, resource_id=event.resource_id, principal_ids=principal_ids
         )
-

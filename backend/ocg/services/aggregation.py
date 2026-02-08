@@ -19,7 +19,9 @@ from ocg.services.identity import hash_person
 
 
 def _step_hash(step: dict) -> str:
-    material = f"{step['action_type']}|{step['tool_family']}|{','.join(step.get('entity_type_tags', []))}"
+    material = (
+        f"{step['action_type']}|{step['tool_family']}|{','.join(step.get('entity_type_tags', []))}"
+    )
     return sha256(material.encode("utf-8")).hexdigest()[:16]
 
 
@@ -41,13 +43,19 @@ def abstract_opted_in_traces(db: Session) -> int:
         ).all()
         for task in tasks:
             events = db.scalars(
-                select(models.TraceEvent).where(models.TraceEvent.trace_event_id.in_(task.member_trace_event_ids))
+                select(models.TraceEvent).where(
+                    models.TraceEvent.trace_event_id.in_(task.member_trace_event_ids)
+                )
             ).all()
             events = sorted(events, key=lambda e: (e.event_time, e.trace_event_id))
             steps = []
             prev_time = None
             for event in events:
-                delta = 0 if prev_time is None else int((event.event_time - prev_time).total_seconds() * 1000)
+                delta = (
+                    0
+                    if prev_time is None
+                    else int((event.event_time - prev_time).total_seconds() * 1000)
+                )
                 prev_time = event.event_time
                 steps.append(
                     {
@@ -90,7 +98,9 @@ def derive_process_key(steps: list[dict]) -> str:
 
 def cluster_and_publish(db: Session, settings: Settings) -> dict[str, int]:
     with AGGREGATION_JOB_DURATION.time():
-        traces = db.scalars(select(models.AbstractTrace).where(models.AbstractTrace.eligible.is_(True))).all()
+        traces = db.scalars(
+            select(models.AbstractTrace).where(models.AbstractTrace.eligible.is_(True))
+        ).all()
         grouped: dict[tuple[str, str], list[models.AbstractTrace]] = defaultdict(list)
         for trace in traces:
             signature = "->".join([_step_hash(step) for step in trace.steps_json])
@@ -102,9 +112,14 @@ def cluster_and_publish(db: Session, settings: Settings) -> dict[str, int]:
         published = 0
         dropped = 0
         for (process_key, signature), bucket in grouped.items():
-            distinct_users = len({trace.source_person_id_hash for trace in bucket if trace.source_person_id_hash})
+            distinct_users = len(
+                {trace.source_person_id_hash for trace in bucket if trace.source_person_id_hash}
+            )
             distinct_traces = len(bucket)
-            publish = distinct_users >= settings.k_anonymity_k and distinct_traces >= settings.k_anonymity_n
+            publish = (
+                distinct_users >= settings.k_anonymity_k
+                and distinct_traces >= settings.k_anonymity_n
+            )
             pattern = models.ContextPattern(
                 process_key=process_key,
                 signature=signature,
@@ -190,7 +205,10 @@ def suggest_next_steps(
 ) -> list[dict]:
     pattern = db.scalar(
         select(models.ContextPattern).where(
-            and_(models.ContextPattern.process_key == process_key, models.ContextPattern.published.is_(True))
+            and_(
+                models.ContextPattern.process_key == process_key,
+                models.ContextPattern.published.is_(True),
+            )
         )
     )
     if not pattern:
@@ -214,7 +232,9 @@ def suggest_next_steps(
             {
                 "step": {"action_type": "unknown", "tool_family": "unknown", "process_tags": []},
                 "probability": edge.probability,
-                "expected_time_to_next_seconds": int(edge.timing_stats_json.get("p50_ms", 0) / 1000),
+                "expected_time_to_next_seconds": int(
+                    edge.timing_stats_json.get("p50_ms", 0) / 1000
+                ),
             }
         )
     return suggestions

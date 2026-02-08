@@ -101,3 +101,9 @@
 - Rationale: Close the gap between normative schema/index expectations and runtime query behavior.
 - Verification impact: G-0003, G-0005.
 - Evidence: spec/05_DATASTORE_AND_MIGRATIONS.md :: Schema overview (normative)
+
+## D-0018 Backend codebase adopts repository-wide Ruff formatting baseline
+- Decision: Normalize backend Python files to the active Ruff formatter style and keep strict `CHECK_PROFILE=ci` format gate enforced.
+- Rationale: Remove formatting debt that blocked strict CI and ensure deterministic style checks.
+- Verification impact: G-0006.
+- Evidence: spec/10_PHASES_AND_TASKS.md :: T-0002 Define ONE repo-anchoring quality command

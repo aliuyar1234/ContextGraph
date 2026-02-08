@@ -29,7 +29,9 @@ def _build_client() -> tuple[TestClient, sessionmaker]:
         poolclass=StaticPool,
     )
     Base.metadata.create_all(engine)
-    LocalSession = sessionmaker(bind=engine, autoflush=False, autocommit=False, expire_on_commit=False)
+    LocalSession = sessionmaker(
+        bind=engine, autoflush=False, autocommit=False, expire_on_commit=False
+    )
 
     app = create_app()
 
@@ -88,7 +90,11 @@ def test_admin_rbac_enforced():
     user_token = _token("user")
     admin_token = _token("admin")
 
-    denied = client.get("/api/v1/admin/connectors", headers={"Authorization": f"Bearer {user_token}"})
-    allowed = client.get("/api/v1/admin/connectors", headers={"Authorization": f"Bearer {admin_token}"})
+    denied = client.get(
+        "/api/v1/admin/connectors", headers={"Authorization": f"Bearer {user_token}"}
+    )
+    allowed = client.get(
+        "/api/v1/admin/connectors", headers={"Authorization": f"Bearer {admin_token}"}
+    )
     assert denied.status_code == 403
     assert allowed.status_code == 200

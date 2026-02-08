@@ -55,7 +55,9 @@ def _decode_oidc_token(token: str, settings: Settings) -> dict[str, Any]:
         )
     except jwt.PyJWTError as exc:
         AUTH_FAILURES.inc()
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token.") from exc
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token."
+        ) from exc
     return payload
 
 
@@ -79,7 +81,9 @@ def build_auth_context(
 
     if not authorization_header or not authorization_header.lower().startswith("bearer "):
         AUTH_FAILURES.inc()
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing bearer token.")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing bearer token."
+        )
     token = authorization_header.split(" ", 1)[1].strip()
     payload = _decode_oidc_token(token, settings)
     now = datetime.now(tz=UTC).timestamp()

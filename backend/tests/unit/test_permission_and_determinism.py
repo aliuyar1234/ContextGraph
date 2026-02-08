@@ -7,7 +7,11 @@ from ocg.services.permissions import PermissionEvaluator
 
 
 def _seed_identity(db, person_id: str) -> None:
-    db.add(models.Person(person_id=person_id, primary_email=None, display_name=None, created_at=utcnow()))
+    db.add(
+        models.Person(
+            person_id=person_id, primary_email=None, display_name=None, created_at=utcnow()
+        )
+    )
     db.add(
         models.Principal(
             principal_id=person_id,
@@ -114,4 +118,3 @@ def test_timeline_sort_is_deterministic(db_session, now):
         key=lambda item: item.sequence_rank,
     )
     assert [item.trace_event_id for item in items] == [first.trace_event_id, second.trace_event_id]
-
