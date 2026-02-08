@@ -68,3 +68,36 @@ This changelog tracks changes to the SSOT pack itself (docs, structure, gates, c
   - evidence: AUDIT_REPORT.md :: IMPLEMENTATION_AUDIT (2026-02-07 README_REFRESH)
   - evidence: PROGRESS.md :: Session history
   - evidence: checks/CHECKS_INDEX.md :: CHK-MANIFEST-VERIFY
+
+## v2.2 (focused hardening pass)
+- Implemented real worker runtime wiring:
+  - added queue runtime orchestration (`ocg worker run|tick|scheduler|stats`)
+  - switched Compose workers from `sleep` to live worker process and added dedicated scheduler service
+  - evidence: backend/ocg/workers/runtime.py :: def run_worker
+  - evidence: docker-compose.yml :: scheduler:
+- Added operational indexing migration for hot queries and joins:
+  - new Alembic revision `20260208_000002_add_operational_indexes.py`
+  - migration test now validates index presence and downgrades to `base`
+  - evidence: backend/alembic/versions/20260208_000002_add_operational_indexes.py :: def upgrade
+  - evidence: backend/tests/integration/test_migrations.py :: test_alembic_upgrade_and_downgrade
+- Expanded observability and correlation:
+  - request trace context propagation (`X-Trace-Id`, `traceparent`) and trace-aware error envelopes
+  - worker job counters/duration metrics and span instrumentation
+  - evidence: backend/ocg/core/observability.py :: class PrometheusMiddleware
+  - evidence: backend/ocg/main.py :: http_exception_handler
+  - evidence: backend/ocg/workers/jobs.py :: WORKER_JOBS_TOTAL
+- Hardened quality gates and CI:
+  - `CHECK_PROFILE=ci|full` now strict (no silent missing-tool skips)
+  - frontend production build verification added to quality command and CI (Node toolchain setup)
+  - evidence: scripts/check.sh :: STRICT_CHECKS
+  - evidence: scripts/frontend_check.sh :: frontend_check: pass
+  - evidence: .github/workflows/ci.yml :: Setup Node
+
+## v2.3 (frontend security patch)
+- Upgraded Next.js from `15.1.2` to patched `15.5.12` and refreshed npm lockfile.
+  - evidence: frontend/package.json :: "next": "15.5.12"
+  - evidence: frontend/package-lock.json :: "next": "15.5.12"
+- Re-ran strict `CHECK_PROFILE=ci` after the upgrade:
+  - frontend build, unit/integration tests, migration check, and OpenAPI compatibility pass
+  - remaining failure is backend format drift under strict `format` stage
+  - evidence: scripts/check.sh :: check profile: ci

@@ -9,7 +9,7 @@
 ### Steps
 1. Start stack:
    - `docker compose up -d postgres redis`
-   - `docker compose up -d api workers ui`
+   - `docker compose up -d api workers scheduler ui`
 2. Run migrations:
    - `ocg migrate up`
 3. Seed sample data (dev only):
@@ -36,6 +36,7 @@ Interpreting failures:
 - `docs_guard` failure: update SSOT docs + DECISIONS/ASSUMPTIONS.
 - migration failure: fix Alembic scripts and expand/contract ordering.
 - permission tests: fix ACL joins or unknown-permission exclusion.
+- frontend build failure (ci/full): run `npm --prefix frontend ci && npm --prefix frontend run build` locally and fix TS/Next build issues.
 
 ## Operational toggles (feature flags) with safe defaults
 - `FEATURE_RAW_CONTENT=false` (safe default)
@@ -107,7 +108,8 @@ Interpreting failures:
 - Rollback:
   - Revert config to last known good; keep bind local until fixed.
 
-## Implementation status snapshot (2026-02-07)
+## Implementation status snapshot (2026-02-08)
 - Compose file: `docker-compose.yml`
 - Backend CLI: `python -m ocg.cli migrate up`, `python -m ocg.cli seed demo`, `python -m ocg.cli diagnostics connectors`
+- Worker runtime CLI: `python -m ocg.cli worker run`, `python -m ocg.cli worker scheduler`, `python -m ocg.cli worker tick`
 - Frontend build command: `npm --prefix frontend run build`

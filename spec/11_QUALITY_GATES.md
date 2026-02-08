@@ -59,6 +59,7 @@ Each gate includes: why, how-to-verify, pass/fail, evidence pointer.
 - Why: Prevent drift; ensure one command anchors quality.
 - How-to-verify:
   - GitHub Actions executes `make check CHECK_PROFILE=ci` as required PR check.
+  - `CHECK_PROFILE=ci|full` MUST fail if required tools are missing (no silent bootstrap skips).
 - Pass/fail:
   - PASS if required check exists and fails PRs on violations.
 - Evidence:
@@ -230,4 +231,3 @@ This map ties SB rules to binary enforcement using gates (G-IDs), checks (CHK-ID
 - Enforced by checks:
   - evidence: checks/CHECKS_INDEX.md :: CHK-NO-ADHOC-FILES
   - evidence: checks/CHECKS_INDEX.md :: CHK-REF-INTEGRITY
-

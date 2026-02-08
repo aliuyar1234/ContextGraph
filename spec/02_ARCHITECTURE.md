@@ -169,7 +169,7 @@ flowchart TB
   - Alembic migrations with reversible downgrade for schema-only changes.
   - For data backfills, use idempotent jobs with checkpointing.
 
-## Implementation status snapshot (2026-02-07)
+## Implementation status snapshot (2026-02-08)
 - API service implemented in `backend/ocg/main.py` with route modules in `backend/ocg/api`.
-- Worker jobs implemented in `backend/ocg/workers/jobs.py` with queue names in `backend/ocg/workers/queues.py`.
-- Docker Compose day-0 stack implemented in `docker-compose.yml`.
+- Worker jobs implemented in `backend/ocg/workers/jobs.py` with queue names in `backend/ocg/workers/queues.py` and runtime orchestration in `backend/ocg/workers/runtime.py`.
+- Docker Compose day-0 stack includes dedicated `workers` (RQ consumer) and `scheduler` (periodic enqueue) services in `docker-compose.yml`.

@@ -83,3 +83,21 @@
 - Rationale: Single command prevents drift between local and CI enforcement.
 - Verification impact: G-0006.
 - Evidence: spec/10_PHASES_AND_TASKS.md :: T-0002 Define ONE repo-anchoring quality command
+
+## D-0015 Worker runtime is split into queue-consumer and scheduler processes
+- Decision: Run a dedicated RQ worker consumer (`ocg worker run`) and a separate scheduler enqueuer (`ocg worker scheduler`) in Compose.
+- Rationale: Prevent single-process starvation and make queue health/depth operationally explicit.
+- Verification impact: G-0004, G-0008.
+- Evidence: spec/02_ARCHITECTURE.md :: Component boundary table (normative)
+
+## D-0016 CI/full profiles are strict and non-skippable
+- Decision: `CHECK_PROFILE=ci|full` fails when required toolchains are missing and includes frontend production build verification.
+- Rationale: Remove silent pass conditions that masked broken environments and frontend regressions.
+- Verification impact: G-0006.
+- Evidence: spec/11_QUALITY_GATES.md :: G-0006 CI-ANCHORING gate (maintainability)
+
+## D-0017 Operational indexes are required beyond baseline schema
+- Decision: Add explicit secondary indexes for ACL joins, trace hot paths, personal timeline/task reads, and context graph lookup patterns.
+- Rationale: Close the gap between normative schema/index expectations and runtime query behavior.
+- Verification impact: G-0003, G-0005.
+- Evidence: spec/05_DATASTORE_AND_MIGRATIONS.md :: Schema overview (normative)

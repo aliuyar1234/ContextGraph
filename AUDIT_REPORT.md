@@ -113,3 +113,32 @@
   - Change-control artifacts were updated and manifest integrity root was regenerated.
     - evidence: CHANGELOG.md :: v2.1 (documentation professionalism refresh)
     - evidence: checks/CHECKS_INDEX.md :: CHK-MANIFEST-VERIFY
+
+## IMPLEMENTATION_AUDIT (2026-02-08 HARDENING_PASS)
+- result: PASS
+- top findings:
+  - Background execution is now wired to a real queue runtime:
+    - dedicated worker and scheduler commands exist and are compose-wired
+    - evidence: backend/ocg/workers/runtime.py :: def run_worker
+    - evidence: docker-compose.yml :: scheduler:
+  - Datastore performance posture improved with explicit operational indexes and migration validation.
+    - evidence: backend/alembic/versions/20260208_000002_add_operational_indexes.py :: def upgrade
+    - evidence: backend/tests/integration/test_migrations.py :: test_alembic_upgrade_and_downgrade
+  - Correlation and traceability improved across API and workers.
+    - evidence: backend/ocg/core/observability.py :: class PrometheusMiddleware
+    - evidence: backend/ocg/main.py :: http_exception_handler
+    - evidence: backend/tests/integration/test_api_auth.py :: test_traceparent_propagates_trace_id
+  - CI and quality command are stricter and include frontend build validation.
+    - evidence: scripts/check.sh :: STRICT_CHECKS
+    - evidence: scripts/frontend_check.sh :: frontend_check: pass
+    - evidence: .github/workflows/ci.yml :: Setup Node
+
+## IMPLEMENTATION_AUDIT (2026-02-08 NEXT_PATCH)
+- result: PASS WITH NOTED DEBT
+- top findings:
+  - Frontend dependency security posture improved by moving to patched Next.js `15.5.12`.
+    - evidence: frontend/package.json :: "next": "15.5.12"
+  - Strict CI profile rerun confirms hardening stack behavior:
+    - frontend build and strict backend test/type/migration/API checks pass
+    - backend formatting debt remains and currently blocks all-green strict profile
+    - evidence: scripts/check.sh :: check profile: ci

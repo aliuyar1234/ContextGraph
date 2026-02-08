@@ -16,6 +16,7 @@ Single ordered path: PHASE_0_BOOTSTRAP → DONE.
 - Purpose: Establish a single local command that runs required checks.
 - Acceptance criteria:
   - `make check` runs: format, lint, typecheck, unit tests, integration tests (optional profile), migration check, secret scan, redaction scan, perf-smoke (optional profile).
+  - `CHECK_PROFILE=ci|full` also runs frontend production build verification.
 - Required evidence:
   - evidence: spec/11_QUALITY_GATES.md :: G-0006
 - Implementation notes:
@@ -228,4 +229,3 @@ Single ordered path: PHASE_0_BOOTSTRAP → DONE.
 All gates MUST pass in CI:
 - G-0001..G-0012.
   - evidence: spec/11_QUALITY_GATES.md :: Gate format
-

@@ -222,7 +222,8 @@ Indexes:
   - continue ingestion only if operator explicitly allows,
   - surface alert in admin UI.
 
-## Implementation status snapshot (2026-02-07)
+## Implementation status snapshot (2026-02-08)
 - Alembic baseline implemented at `backend/alembic/versions/20260207_000001_init.py`.
+- Operational index expansion implemented at `backend/alembic/versions/20260208_000002_add_operational_indexes.py` for hot paths and ACL joins.
 - CLI migration commands are available via `python -m ocg.cli migrate up|down`.
 - Migration validation test exists in `backend/tests/integration/test_migrations.py`.

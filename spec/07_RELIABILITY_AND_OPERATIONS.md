@@ -44,6 +44,7 @@
   - `personal_graph`
   - `aggregate_context`
 - A failure in one queue MUST NOT prevent API availability.
+- Runtime topology SHOULD use separate worker-consumer and scheduler-enqueue processes to avoid single-process starvation.
 
 ## Degradation modes (normative)
 - If aggregation is behind:

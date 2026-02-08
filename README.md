@@ -3,8 +3,8 @@
 Open Context Graph is a self-hosted, privacy-aware process intelligence platform built from Slack, Jira, and GitHub metadata.  
 It combines fail-closed permission enforcement, private personal timelines, and k-anonymous analytics to deliver actionable workflow insight without creating a surveillance system.
 
-## Implementation status (2026-02-07)
-- `v2.0` implementation completed across backend, frontend, operations assets, and quality gates.
+## Implementation status (2026-02-08)
+- `v2.2` hardening pass completed across worker runtime, CI coverage, migration indexing, tracing, and strict quality checks.
 - PHASE tasks `T-0001` through `T-0024` are marked `DONE` with evidence pointers.
 - CI is anchored on the same command used locally: `make check CHECK_PROFILE=ci`.
 
@@ -31,7 +31,7 @@ Prerequisites:
 
 Run:
 ```bash
-docker compose up -d postgres redis api workers ui
+docker compose up -d postgres redis api workers scheduler ui
 docker compose exec api ocg migrate up
 docker compose exec api ocg seed demo
 curl -f http://127.0.0.1:8080/healthz
@@ -61,7 +61,15 @@ npm --prefix frontend run dev
 - CI-equivalent: `make check CHECK_PROFILE=ci`
 - Full suite: `make check CHECK_PROFILE=full`
 
-The quality command runs format, lint, typecheck, unit tests, profile-gated integration tests, migration checks, secret scans, redaction scans, and (for `ci`/`full`) OpenAPI compatibility.
+The quality command runs format, lint, typecheck, unit tests, profile-gated integration tests, migration checks, secret scans, redaction scans, and (for `ci`/`full`) frontend production build plus OpenAPI compatibility.
+- `CHECK_PROFILE=ci|full` is strict: required toolchains/tests cannot silently skip.
+
+Worker operations:
+```bash
+PYTHONPATH=backend python -m ocg.cli worker run
+PYTHONPATH=backend python -m ocg.cli worker scheduler --once
+PYTHONPATH=backend python -m ocg.cli worker stats
+```
 
 ## API surfaces
 - Health and metrics:

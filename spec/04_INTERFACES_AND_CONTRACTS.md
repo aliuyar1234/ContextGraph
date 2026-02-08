@@ -6,7 +6,7 @@
 - CLI `ocg` (local)
 - Operational endpoints:
   - `/healthz` (liveness)
-  - `/readyz` (readiness: DB/queue reachable)
+  - `/readyz` (readiness: DB + Redis reachable)
   - `/metrics` (Prometheus)
 
 ## REST API (normative)
@@ -120,7 +120,8 @@ Response:
     "code": "PERMISSION_DENIED",
     "message": "Not authorized.",
     "retryable": false,
-    "request_id": "req_01H..."
+    "request_id": "req_01H...",
+    "trace_id": "0123456789abcdef0123456789abcdef"
   }
 }
 ```
@@ -159,7 +160,8 @@ Response:
   - MUST be announced in release notes.
   - MUST remain for at least 2 minor releases unless security requires faster removal.
 
-## Implementation status snapshot (2026-02-07)
+## Implementation status snapshot (2026-02-08)
 - API implementation baseline exists in `backend/ocg/main.py` and routers under `backend/ocg/api/*`.
 - OpenAPI baseline artifact is tracked at `docs/openapi/openapi.v1.json` and checked by `scripts/openapi_check.sh`.
 - CI compatibility guard uses the same command path via `make check CHECK_PROFILE=ci`.
+- Error envelopes include both `request_id` and `trace_id` for cross-system correlation.

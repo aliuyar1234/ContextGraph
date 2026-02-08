@@ -41,6 +41,7 @@
   - aggregation pipeline stages.
 - Required span attributes:
   - `tool`, `process_key` (when applicable), `db.statement_name`, `queue_name`.
+- HTTP responses SHOULD expose `X-Trace-Id` and `traceparent` to simplify correlation with downstream logs and spans.
 
 ## Dashboards (outline; normative)
 - System health:
@@ -79,7 +80,8 @@
 - C5 Change:
   - docs-as-code guard passes; migrations tested; dependency linter passes (G-0005, G-0007, G-0008).
 
-## Implementation status snapshot (2026-02-07)
+## Implementation status snapshot (2026-02-08)
 - Metrics instrumentation lives in `backend/ocg/core/observability.py`.
+- Request trace context propagation and worker span metrics are implemented in `backend/ocg/core/observability.py` and `backend/ocg/workers/jobs.py`.
 - Dashboards are defined in `ops/grafana/dashboards/system_health.json` and `ops/grafana/dashboards/connector_health.json`.
 - Alert rules are defined in `ops/prometheus/alerts.yml`.
