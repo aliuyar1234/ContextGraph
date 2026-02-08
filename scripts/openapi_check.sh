@@ -39,8 +39,22 @@ import json
 import sys
 from pathlib import Path
 
-generated = json.loads(Path("docs/openapi/.generated.json").read_text(encoding="utf-8"))
-baseline = json.loads(Path("docs/openapi/openapi.v1.json").read_text(encoding="utf-8"))
+def normalize(doc):
+    validation_props = (
+        doc.get("components", {})
+        .get("schemas", {})
+        .get("ValidationError", {})
+        .get("properties")
+    )
+    if isinstance(validation_props, dict):
+        # FastAPI/Pydantic versions may add framework-level validation metadata
+        # without changing our own API contract surface.
+        validation_props.pop("input", None)
+        validation_props.pop("ctx", None)
+    return doc
+
+generated = normalize(json.loads(Path("docs/openapi/.generated.json").read_text(encoding="utf-8")))
+baseline = normalize(json.loads(Path("docs/openapi/openapi.v1.json").read_text(encoding="utf-8")))
 sys.exit(0 if generated == baseline else 1)
 PY
 then
