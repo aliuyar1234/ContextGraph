@@ -6,6 +6,7 @@
 [![Next.js](https://img.shields.io/badge/Next.js-15.5.12-black)](frontend/package.json)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB)](backend/pyproject.toml)
 [![Self-Hosted](https://img.shields.io/badge/Deployment-Self--Hosted-4c8bf5)](README.md#quick-start-docker-compose)
+[![AI Layer](https://img.shields.io/badge/AI-Semantic%20Intelligence-0a7f5a)](#where-ai-fits)
 
 Open Context Graph is a self-hosted, privacy-aware process intelligence platform built from Slack, Jira, and GitHub metadata.
 It combines fail-closed permission enforcement, private personal timelines, and k-anonymous analytics so teams can improve execution without creating surveillance risk.
@@ -14,6 +15,20 @@ It combines fail-closed permission enforcement, private personal timelines, and 
 - A self-hosted process intelligence platform for engineering and operations teams.
 - Built from enterprise metadata streams (Slack, Jira, GitHub), not employee surveillance.
 - Privacy-first by design: fail-closed permissions, private personal views, k-anonymous aggregation.
+
+## Where AI Fits
+- This is an AI-engineering system, not only dashboarding: it has a dedicated intelligence layer on top of deterministic ingestion.
+- AI today:
+  - semantic step labeling for process states
+  - probabilistic next-step scoring for operational guidance
+  - context-aware clustering support for variants and bottlenecks
+- AI roadmap:
+  - LLM-assisted natural-language querying of process data
+  - richer semantic summarization of critical flows and risk signals
+- Guardrails:
+  - feature-flagged AI components
+  - fail-closed permissions and k-anonymous publishing stay authoritative
+  - no raw-content dependency required for baseline value
 
 ## Demo story screenshots (desktop)
 Overview:
@@ -37,6 +52,12 @@ flowchart LR
     Workers["Worker Runtime<br/>Ingest + Personal + Aggregation"]
   end
 
+  subgraph Intelligence["AI / Intelligence Layer"]
+    Labeling["Semantic Labeling<br/>(LLM optional)"]
+    Reasoning["Process Reasoning<br/>and Next-Step Scoring"]
+    Similarity["Similarity / Clustering<br/>for Pattern Discovery"]
+  end
+
   subgraph DataLayer["Data Layer"]
     PG[("PostgreSQL<br/>events + graph + aggregates")]
     RQ[("Redis<br/>job queues")]
@@ -56,16 +77,26 @@ flowchart LR
   API --> OIDC
   API --> PG
   API --> RQ
+  API --> Reasoning
   Workers --> RQ
   Workers --> PG
+  Workers --> Labeling
+  Workers --> Similarity
+  Reasoning --> PG
+  Labeling --> PG
+  Similarity --> PG
   Workers --> Tools
   API --> Prom
   Workers --> Prom
+  Labeling --> Prom
+  Reasoning --> Prom
+  Similarity --> Prom
 ```
 
 | Layer | What it contains |
 |---|---|
 | `backend/` | FastAPI service, domain services, migrations, CLI, worker runtime |
+| `AI/Intelligence` | Semantic labeling, similarity clustering, and next-step inference (feature-flagged, privacy-guarded) |
 | `frontend/` | Next.js dashboards (`/admin`, `/analytics`, `/personal`) |
 | `ops/` | Prometheus scrape config, alert rules, Grafana dashboards |
 | `docs/openapi/` | OpenAPI compatibility baseline artifact |
